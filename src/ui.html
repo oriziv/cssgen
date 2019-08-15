@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="button-container">
+            <button class="button button--primary" id="generate">Generate</button>
+        </div>
+        <div class="list-container">
+            <select class="select-menu select-menu__button" name="format" id="codeFormat">
+                <option value="scss">SCSS</option>
+                <option value="less">LESS</option>
+            </select>
+        </div>
+        <div class="clear"></div>
+        <textarea readonly class="textarea" name="generatedCode" id="generatedCode" cols="30" rows="10" ></textarea>
+        <button id="download" class="button button--secondary-destructive">Download</button>
+        <p class="onboarding-tip__msg">
+            Clicking on "Generate" will generate the selected css preprocessor styles from this page used figma styles.
+        </p>
+    </div>
+    <script src="FileSaver.js"></script>
+</body>
+<script>
+    const generateButton = document.querySelector('#generate');
+    const downloadButton = document.querySelector('#download');
+    const textarea = document.querySelector('#generatedCode');
+    const selectedFormat = document.querySelector('#codeFormat');
+
+    generateButton.addEventListener('click', (event)=> {
+        parent.postMessage({ pluginMessage: {command:'GENERATE_CODE', format: selectedFormat.value} }, '*');
+    });
+
+    downloadButton.addEventListener('click', (event)=> {
+        parent.postMessage({ pluginMessage: {command:'DOWNLOAD', format: selectedFormat.value} }, '*');
+    });
+
+    window.addEventListener('message', (event)=> {
+        const code = event.data.pluginMessage.code;
+        textarea.value = code;
+    });
+</script>
+</html>

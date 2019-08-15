@@ -1,0 +1,37 @@
+@import '../figma-plugin-ui-css-0.5/css/scss/main.scss';
+body {
+    padding: 0;
+    margin: 0;
+}
+.container {
+    padding: 10px;
+}
+
+.list-container {
+    float: right;
+}
+
+.button-container {
+    float: left;
+}
+
+textarea.textarea {
+    margin: 10px 0;
+    overflow: auto;
+    width: 100%;
+}
+
+.clear {
+    clear: both;
+}
+
+i {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+}
+
+.svg-container {
+    display: inline-block;
+    background: #eee;
+}
