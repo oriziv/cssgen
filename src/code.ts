@@ -9,7 +9,7 @@ let currentGeneratedCode: string = '';
 
 // Display UI
 figma.showUI(__html__, {
-    height: 380,
+    height: 300,
     width: 300
 });
 
