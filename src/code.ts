@@ -13,7 +13,7 @@ figma.showUI(__html__, {
     width: 300
 });
 
-// Define listener to message from the ui
+// Define listener to message from the ui and choose what to do based on the command type
 figma.ui.onmessage = (message) => {
     switch (message.command) {
         case CommandType.DOWNLOAD:
@@ -32,25 +32,26 @@ figma.ui.onmessage = (message) => {
 // figma.closePlugin();
 function download(message: IMessageFormat) {
     if(message.format) {
-        // const blob:any = new Blob([currentGeneratedCode], {type: "text/plain;charset=utf-8"});
-        // saveAs(blob, `styles.${format}`);
     }
 }
 
+// Iterate over the figma tree and fetch the styles.
+// Current support is text styles and color styles
 function generateCode(message: IMessageFormat) {
-    figma.ui.postMessage({code: ""});
+    figma.ui.postMessage({command: CommandType.CLEAN});
     let generatedCode = '';
-    console.log("got this from the UI", message);
+    
     if(message.format) {
         format = message.format; 
     }
-
+    
+    // Release the ui thread to paint and exec traverse.
     setTimeout(()=> {
         traverse(figma.root);
+        console.log('count', count);
         for (const key in colorStyles) {
             const val = colorStyles[key];
             const preprocessorVariable = `${formatVariable(key, format)}:${val};\n`;
-            console.log(key, preprocessorVariable);
             generatedCode += preprocessorVariable;
         }
     
@@ -65,7 +66,7 @@ function generateCode(message: IMessageFormat) {
             value += `}\n`;
             generatedCode += value;
         }
-        figma.ui.postMessage({code: generatedCode});
+        figma.ui.postMessage({code: generatedCode, count: count});
         currentGeneratedCode = generatedCode;
     }, 10);
 }
@@ -81,22 +82,32 @@ function traverse(node: BaseNode) {
     }
 
     if ("children" in node) {
-        count++
         if (node.type !== 'INSTANCE') {
             for (const child of node.children) {
                 traverse(child);
-
+                
                 if(child.type === 'RECTANGLE' && child.fillStyleId) {
                     const styleId: any = child.fillStyleId;
                     const style = figma.getStyleById(styleId);
+                    
+                    if(!style) {
+                        continue;
+                    }
+
+                    
+                    const key = style.name;
+                    if(colorStyles[key]) {
+                        continue;
+                    }
+
+                    // Prepare style
                     const color = style['paints'][0].color;
                     const opacity = style['paints'][0].opacity;
-                    const key = style.name;
                     const val = getColorValue(color, opacity);
                     
-                    if(!colorStyles[key]) {
-                        colorStyles[key] = val;
-                    }
+                    // Count styles
+                    colorStyles[key] = val;
+                    count++;
                 }
 
                 if(child.type === 'TEXT') {
@@ -104,14 +115,20 @@ function traverse(node: BaseNode) {
                     if(!styleId || typeof styleId !== 'string') {
                         continue;
                     }
-                    const style:any = figma.getStyleById(styleId);
-                    const key = style.name;
 
+                    // Get the style
+                    const style:any = figma.getStyleById(styleId);
+                    
+                    if(!style){
+                        continue;
+                    }
+
+                    const key = style.name;
                     // Check that the key is not already calculated
                     if(textStyles[key]) {
                         continue;
                     }
-
+                    
                     let textValues = {};
                     textValues['font-size'] = style.fontSize;
                     textValues['font-family'] = `"${style.fontName.family}"`;
@@ -119,6 +136,7 @@ function traverse(node: BaseNode) {
                     // TODO by UNIT
                     textValues['line-height'] = style.lineHeight['value'] + 'px';
                     textStyles[key] = textValues;
+                    count++;
                 }
                 
             }

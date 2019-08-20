@@ -49,12 +49,26 @@
     });
 
     window.addEventListener('message', (event)=> {
+        if(event.data.pluginMessage.command === 'clean') {
+          codeElement.innerHTML = "";
+          downloadButton.setAttribute('disabled', true);
+          copyButton.setAttribute('disabled', true);
+          return;
+        }
+
+        if(event.data.pluginMessage.count === 0) {
+          codeElement.innerHTML = '<span>No styles were found<span>';
+          return;
+        }
+
         if(!event.data.pluginMessage || !event.data.pluginMessage.code) {
           codeElement.innerHTML = "";
           downloadButton.setAttribute('disabled', true);
           copyButton.setAttribute('disabled', true);
           return;
         }
+
+
         downloadButton.removeAttribute('disabled');
         copyButton.removeAttribute('disabled');
         const code = event.data.pluginMessage.code;

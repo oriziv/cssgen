@@ -14,7 +14,8 @@ export interface ITextStyleOutput {
 export type OutputFormat = 'scss' | 'less';
 export enum CommandType {
     GENERATE_CODE='GENERATE_CODE',
-    DOWNLOAD='DOWNLOAD'
+    DOWNLOAD='DOWNLOAD',
+    CLEAN='CLEAN'
 }
 export interface IMessageFormat extends MessageEvent {
     format: OutputFormat;
