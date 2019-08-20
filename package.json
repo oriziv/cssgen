@@ -4,12 +4,13 @@
   "description": "",
   "main": "code.js",
   "scripts": {
+    "start": "npx webpack --mode=development --watch",
     "dev": "npx webpack --mode=development --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx webpack --mode=production"
   },
   "author": "Ori Ziv",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/file-saver": "^2.0.1",
     "@types/prismjs": "^1.16.0",

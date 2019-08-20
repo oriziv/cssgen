@@ -13,7 +13,7 @@ export function getMixinPrefix(fileFormat: OutputFormat, mixinName: string) {
 
 export function formatVariable(variable: string, output: OutputFormat) {
     let res = variable.replace(/[^a-zA-Z\d\s\-\_]/g,'');
-    res = res.replace(/[\.\s]/g, '-');
+    res = res.replace(/[\.\s]/g, '-').replace(/^\d+/g, '');
     const prefix = getVariablePrefix(output);
     return prefix + res;
 }
