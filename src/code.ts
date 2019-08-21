@@ -111,6 +111,7 @@ function traverse(node: BaseNode) {
                 }
 
                 if(child.type === 'TEXT') {
+                    console.log(child);
                     const styleId: any = child.textStyleId;
                     if(!styleId || typeof styleId !== 'string') {
                         continue;
@@ -122,7 +123,7 @@ function traverse(node: BaseNode) {
                     if(!style){
                         continue;
                     }
-
+                    console.log(style);
                     const key = style.name;
                     // Check that the key is not already calculated
                     if(textStyles[key]) {
@@ -130,9 +131,11 @@ function traverse(node: BaseNode) {
                     }
                     
                     let textValues = {};
-                    textValues['font-size'] = style.fontSize;
+                    textValues['font-size'] = `${style.fontSize}px`;
                     textValues['font-family'] = `"${style.fontName.family}"`;
-                    textValues['font-weight'] = `"${style.fontName.style}"`;
+                    const fontStyle = style.fontName.style.toLowerCase();
+                    const fontStyleValue = fontStyle === 'regular' ? 'normal' : fontStyle;
+                    textValues['font-style'] = fontStyleValue;
                     // TODO by UNIT
                     textValues['line-height'] = style.lineHeight['value'] + 'px';
                     textStyles[key] = textValues;
