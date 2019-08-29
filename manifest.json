@@ -1,5 +1,5 @@
 {
-  "name": "Generate Code Styles",
+  "name": "CSSGen",
   "id": "742750636238601912",
   "api": "1.0.0",
   "main": "dist/code.js",
