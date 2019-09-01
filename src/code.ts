@@ -47,7 +47,11 @@ function generateCode(message: IMessageFormat) {
     
     // Release the ui thread to paint and exec traverse.
     setTimeout(()=> {
-        traverse(figma.root);
+        if(typeof figma.getLocalPaintStyles === 'function') {
+            getLocalStyles();
+        } else {
+            traverse(figma.root);
+        }
         console.log('count', count);
         for (const key in colorStyles) {
             const val = colorStyles[key];
@@ -75,6 +79,33 @@ function generateCode(message: IMessageFormat) {
 
 // This plugin counts the number of layers, ignoring instance sublayers,
 // in the document
+function getLocalStyles() {
+    const paintStyles = figma.getLocalPaintStyles();
+    paintStyles.forEach((style: PaintStyle) => {
+        // Prepare style
+        const color = style.paints[0]['color'];
+        const opacity = style.paints[0].opacity;
+        const val = getColorValue(color, opacity);
+        
+        // Count styles
+        colorStyles[style.name] = val;
+        count++;
+    });
+
+    const tStyles = figma.getLocalTextStyles();
+    tStyles.forEach((style: TextStyle) => {
+        let textValues = {};
+        textValues['font-size'] = `${style.fontSize}px`;
+        textValues['font-family'] = `"${style.fontName.family}"`;
+        const fontStyle = style.fontName.style.toLowerCase();
+        const fontStyleValue = fontStyle === 'regular' ? 'normal' : fontStyle;
+        textValues['font-style'] = fontStyleValue;
+        // TODO by UNIT
+        textValues['line-height'] = style.lineHeight['value'] + 'px';
+        textStyles[style.name] = textValues;
+        count++;
+    });
+}
 
 function traverse(node: BaseNode) {
     if(!node) {
@@ -85,7 +116,30 @@ function traverse(node: BaseNode) {
         if (node.type !== 'INSTANCE') {
             for (const child of node.children) {
                 traverse(child);
-                
+                if(child.type === 'FRAME' ) {
+                    const styleId: any = child.backgroundStyleId;
+                    const style = figma.getStyleById(styleId);
+                    
+                    if(!style) {
+                        continue;
+                    }
+
+                    console.log('FRAME', style);
+                    const key = style.name;
+                    if(colorStyles[key]) {
+                        continue;
+                    }
+
+                    // Prepare style
+                    const color = style['paints'][0].color;
+                    const opacity = style['paints'][0].opacity;
+                    const val = getColorValue(color, opacity);
+                    
+                    // Count styles
+                    colorStyles[key] = val;
+                    count++;                    
+                }
+
                 if(child.type === 'RECTANGLE' && child.fillStyleId) {
                     const styleId: any = child.fillStyleId;
                     const style = figma.getStyleById(styleId);
