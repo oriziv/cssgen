@@ -83,6 +83,9 @@ function getLocalStyles() {
     const paintStyles = figma.getLocalPaintStyles();
     paintStyles.forEach((style: PaintStyle) => {
         // Prepare style
+        if(!style.paints || !style.paints.length || !style.paints[0]['color']) {
+            return;
+        }
         const color = style.paints[0]['color'];
         const opacity = style.paints[0].opacity;
         const val = getColorValue(color, opacity);
