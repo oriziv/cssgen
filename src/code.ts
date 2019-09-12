@@ -98,13 +98,20 @@ function getLocalStyles() {
     const tStyles = figma.getLocalTextStyles();
     tStyles.forEach((style: TextStyle) => {
         let textValues = {};
-        textValues['font-size'] = `${style.fontSize}px`;
-        textValues['font-family'] = `"${style.fontName.family}"`;
-        const fontStyle = style.fontName.style.toLowerCase();
-        const fontStyleValue = fontStyle === 'regular' ? 'normal' : fontStyle;
-        textValues['font-style'] = fontStyleValue;
+        if(style.fontSize) {
+            textValues['font-size'] = `${style.fontSize}px`;
+        }
+        if(style.fontName && style.fontName.style) {
+            textValues['font-family'] = `"${style.fontName.family}"`;
+            const fontStyle = style.fontName.style.toLowerCase();
+            const fontStyleValue = fontStyle === 'regular' ? 'normal' : fontStyle;
+            textValues['font-style'] = fontStyleValue;
+        }
+        
         // TODO by UNIT
-        textValues['line-height'] = style.lineHeight['value'] + 'px';
+        if(style.lineHeight && style.lineHeight['value']) {
+            textValues['line-height'] = style.lineHeight['value'] + 'px';
+        }
         textStyles[style.name] = textValues;
         count++;
     });
