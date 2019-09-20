@@ -5,7 +5,11 @@ export function camelCaseToDash( myStr ) {
 }
 
 export function getVariablePrefix(fileFormat: OutputFormat) {
-    return fileFormat === 'scss' ? '$' : '@';
+  switch (fileFormat) {
+    case 'scss': return '$';
+    case 'less': return '@';
+    case 'css': return '--';
+  }
 }
 export function getMixinPrefix(fileFormat: OutputFormat, mixinName: string) {
     return fileFormat === 'scss' ? `@mixin ${mixinName}` : `.${mixinName}()`;
