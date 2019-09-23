@@ -59,16 +59,18 @@ function generateCode(message: IMessageFormat) {
             generatedCode += preprocessorVariable;
         }
     
-        for (const key in textStyles) {
-            const element = textStyles[key];
-            const mixinName = formatVariable(key, format).replace(/^\$|\@/g, "");
-            let value: string = `${getMixinPrefix(format, mixinName)} {\n`;
-            for (const cssRule in element) {
-                const cssValue = element[cssRule];
-                value+= `\t${cssRule}:${cssValue};\n`;
-            }
-            value += `}\n`;
-            generatedCode += value;
+        if (format !== 'css') {
+          for (const key in textStyles) {
+              const element = textStyles[key];
+              const mixinName = formatVariable(key, format).replace(/^\$|\@/g, "");
+              let value: string = `${getMixinPrefix(format, mixinName)} {\n`;
+              for (const cssRule in element) {
+                  const cssValue = element[cssRule];
+                  value+= `\t${cssRule}:${cssValue};\n`;
+              }
+              value += `}\n`;
+              generatedCode += value;
+          }
         }
         figma.ui.postMessage({code: generatedCode, count: count});
         currentGeneratedCode = generatedCode;

@@ -11,7 +11,7 @@ export interface ITextStyleOutput {
     [key: string]: {};
 }
 
-export type OutputFormat = 'scss' | 'less';
+export type OutputFormat = 'scss' | 'less' | 'css';
 export enum CommandType {
     GENERATE_CODE='GENERATE_CODE',
     DOWNLOAD='DOWNLOAD',
