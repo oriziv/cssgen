@@ -53,6 +53,10 @@ function generateCode(message: IMessageFormat) {
             traverse(figma.root);
         }
         console.log('count', count);
+        if(format === 'css') {
+            generatedCode += `:root {\n`;
+        }
+
         for (const key in colorStyles) {
             const val = colorStyles[key];
             const preprocessorVariable = `${formatVariable(key, format)}:${val};\n`;
@@ -71,6 +75,8 @@ function generateCode(message: IMessageFormat) {
               value += `}\n`;
               generatedCode += value;
           }
+        } else {
+            generatedCode += `}`;
         }
         figma.ui.postMessage({code: generatedCode, count: count});
         currentGeneratedCode = generatedCode;
