@@ -1,23 +1,23 @@
 export interface IOutputStyle {
-    fills: IFillsOutput;
-    textStyles: ITextStyleOutput;
+  fills: IFillsOutput;
+  textStyles: ITextStyleOutput;
 }
 
 export interface IFillsOutput {
-    [key: string]: string;
+  [key: string]: string;
 }
 
 export interface ITextStyleOutput {
-    [key: string]: {};
+  [key: string]: {};
 }
 
-export type OutputFormat = 'scss' | 'less' | 'css';
+export type OutputFormat = "scss" | "less" | "css";
 export enum CommandType {
-    GENERATE_CODE='GENERATE_CODE',
-    DOWNLOAD='DOWNLOAD',
-    CLEAN='CLEAN'
+  GENERATE_CODE = "GENERATE_CODE",
+  DOWNLOAD = "DOWNLOAD",
+  CLEAN = "CLEAN"
 }
 export interface IMessageFormat extends MessageEvent {
-    format: OutputFormat;
-    command: CommandType;
+  format: OutputFormat;
+  command: CommandType;
 }

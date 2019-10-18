@@ -1,67 +1,68 @@
-@import '../figma-plugin-ui-css-0.5/css/scss/main.scss';
+@import "../figma-plugin-ui-css-0.5/css/scss/main.scss";
 body {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 .container {
-    user-select: none;
-    padding: 10px;
-    background: white;
+  user-select: none;
+  padding: 10px;
+  background: white;
 }
 
 .list-container {
-    float: right;
+  float: right;
 }
 
 .button-container {
-    float: left;
+  float: left;
 }
 
-#download, #copy {
-    color: #18a0fb!important;
-    border-color: #18a0fb!important;
+#download,
+#copy {
+  color: #18a0fb !important;
+  border-color: #18a0fb !important;
 }
 textarea.textarea {
-    display: none;
-    margin: 10px 0;
-    overflow: auto;
-    overflow-y: none;
-    width: 100%;
+  display: none;
+  margin: 10px 0;
+  overflow: auto;
+  overflow-y: none;
+  width: 100%;
 }
 
 pre[class*="language-"] {
-    user-select: text;
-    overflow: auto;
-    overflow-x: hidden!important;
-    width: 100%;
-    height: 190px;
-    background: white!important;
-    padding: 0!important;
+  user-select: text;
+  overflow: auto;
+  overflow-x: hidden !important;
+  width: 100%;
+  height: 190px;
+  background: white !important;
+  padding: 0 !important;
 }
 
 .clear {
-    clear: both;
+  clear: both;
 }
 
 i {
-    width: 32px;
-    height: 32px;
-    display: inline-block;
+  width: 32px;
+  height: 32px;
+  display: inline-block;
 }
 
 .svg-container {
-    display: inline-block;
-    background: #eee;
+  display: inline-block;
+  background: #eee;
 }
 
 pre::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
- 
+
 pre::-webkit-scrollbar-track {
-    background-color: #eee;
+  background-color: #eee;
 }
- 
+
 pre::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;
