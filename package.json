@@ -12,7 +12,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "prettier --write packages/**/CHANGELOG.md --loglevel silent && git add packages/**/CHANGELOG.md"
+            "pre-commit": "prettier --write CHANGELOG.md --loglevel silent && git add CHANGELOG.md"
         }
     },
     "scripts": {
