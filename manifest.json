@@ -3,5 +3,6 @@
   "id": "742750636238601912",
   "api": "1.0.0",
   "main": "dist/code.js",
-  "ui": "dist/ui.html"
+  "ui": "dist/ui.html",
+  "version": "1.0.1"
 }

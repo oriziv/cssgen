@@ -1,26 +1,42 @@
 {
     "name": "generate-sass-less",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "",
     "main": "code.js",
+    "author": "Ori Ziv",
+    "license": "MIT",
+    "config": {
+        "commitizen": {
+            "path": "node_modules/cz-conventional-changelog"
+        }
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "prettier --write packages/**/CHANGELOG.md --loglevel silent && git add packages/**/CHANGELOG.md"
+        }
+    },
     "scripts": {
         "start": "npx webpack --mode=development --watch",
         "dev": "npx webpack --mode=development --watch",
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "npx webpack --mode=production",
-        "prettier": "prettier --write ./src/**/* ./*.js"
+        "prettier": "prettier --write ./src/**/* ./*.js",
+        "commit": "git-cz",
+        "changelog": "standard-version",
+        "release": "git push --follow-tags"
     },
-    "author": "Ori Ziv",
-    "license": "MIT",
     "devDependencies": {
         "@types/file-saver": "^2.0.1",
         "@types/prismjs": "^1.16.0",
+        "commitizen": "^4.0.3",
         "css-loader": "^3.2.0",
+        "cz-conventional-changelog": "^3.0.2",
         "html-webpack-inline-source-plugin": "0.0.10",
         "html-webpack-plugin": "^3.2.0",
         "node-sass": "^4.12.0",
         "prettier": "^1.18.2",
         "sass-loader": "^7.2.0",
+        "standard-version": "^7.0.0",
         "style-loader": "^1.0.0",
         "ts-loader": "^6.0.4",
         "typescript": "^3.5.3",
