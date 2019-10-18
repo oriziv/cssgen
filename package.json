@@ -5,6 +5,14 @@
     "main": "code.js",
     "author": "Ori Ziv",
     "license": "MIT",
+    "standard-version": {
+        "packageFiles": [
+            "package.json"
+        ],
+        "bumpFiles": [
+            "package-lock.json"
+        ]
+    },
     "config": {
         "commitizen": {
             "path": "node_modules/cz-conventional-changelog"
@@ -36,7 +44,7 @@
         "node-sass": "^4.12.0",
         "prettier": "^1.18.2",
         "sass-loader": "^7.2.0",
-        "standard-version": "^7.0.0",
+        "standard-version": "git+https://github.com/conventional-changelog/standard-version.git#feat-bump-files",
         "style-loader": "^1.0.0",
         "ts-loader": "^6.0.4",
         "typescript": "^3.5.3",
