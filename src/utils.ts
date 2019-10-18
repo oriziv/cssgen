@@ -1,30 +1,30 @@
-import { OutputFormat } from "./interfaces";
+import { OutputFormat } from './interfaces';
 
 export function camelCaseToDash(myStr) {
-  return myStr.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+  return myStr.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
 export function getVariablePrefix(fileFormat: OutputFormat) {
   switch (fileFormat) {
-    case "scss":
-      return "$";
-    case "less":
-      return "@";
-    case "css":
-      return "--";
+    case 'scss':
+      return '$';
+    case 'less':
+      return '@';
+    case 'css':
+      return '--';
   }
 }
 export function getMixinPrefix(fileFormat: OutputFormat, mixinName: string) {
-  return fileFormat === "scss" ? `@mixin ${mixinName}` : `.${mixinName}()`;
+  return fileFormat === 'scss' ? `@mixin ${mixinName}` : `.${mixinName}()`;
 }
 
 export function formatVariable(variable: string, output: OutputFormat) {
-  let res = variable.replace(/[^a-zA-Z\d\s\-\_]/g, "");
+  let res = variable.replace(/[^a-zA-Z\d\s\-\_]/g, '');
   res = res
-    .replace(/[\.\s]/g, "-")
-    .replace(/^\d+/g, "")
-    .replace(/\-+/g, "-")
-    .replace(/^\-/, "");
+    .replace(/[\.\s]/g, '-')
+    .replace(/^\d+/g, '')
+    .replace(/\-+/g, '-')
+    .replace(/^\-/, '');
   const prefix = getVariablePrefix(output);
   return prefix + res;
 }

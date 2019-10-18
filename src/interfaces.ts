@@ -11,11 +11,11 @@ export interface ITextStyleOutput {
   [key: string]: {};
 }
 
-export type OutputFormat = "scss" | "less" | "css";
+export type OutputFormat = 'scss' | 'less' | 'css';
 export enum CommandType {
-  GENERATE_CODE = "GENERATE_CODE",
-  DOWNLOAD = "DOWNLOAD",
-  CLEAN = "CLEAN"
+  GENERATE_CODE = 'GENERATE_CODE',
+  DOWNLOAD = 'DOWNLOAD',
+  CLEAN = 'CLEAN'
 }
 export interface IMessageFormat extends MessageEvent {
   format: OutputFormat;

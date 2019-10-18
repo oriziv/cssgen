@@ -1,4 +1,5 @@
-@import "../figma-plugin-ui-css-0.5/css/scss/main.scss";
+@import '../figma-plugin-ui-css-0.5/css/scss/main.scss';
+
 body {
   padding: 0;
   margin: 0;
@@ -30,7 +31,7 @@ textarea.textarea {
   width: 100%;
 }
 
-pre[class*="language-"] {
+pre[class*='language-'] {
   user-select: text;
   overflow: auto;
   overflow-x: hidden !important;

@@ -1,16 +1,16 @@
-import { formatVariable, getMixinPrefix, getColorValue } from "./utils";
-import { OutputFormat, CommandType, IMessageFormat } from "./interfaces";
+import { formatVariable, getMixinPrefix, getColorValue } from './utils';
+import { OutputFormat, CommandType, IMessageFormat } from './interfaces';
 
 let count = 0;
 let colorStyles = {};
 let textStyles = {};
-let format: OutputFormat = "scss";
-let currentGeneratedCode: string = "";
+let format: OutputFormat = 'scss';
+let currentGeneratedCode: string = '';
 
 // Display UI
 figma.showUI(__html__, {
   height: 300,
-  width: 300
+  width: 500
 });
 
 // Define listener to message from the ui and choose what to do based on the command type
@@ -38,7 +38,7 @@ function download(message: IMessageFormat) {
 // Current support is text styles and color styles
 function generateCode(message: IMessageFormat) {
   figma.ui.postMessage({ command: CommandType.CLEAN });
-  let generatedCode = "";
+  let generatedCode = '';
 
   if (message.format) {
     format = message.format;
@@ -46,13 +46,13 @@ function generateCode(message: IMessageFormat) {
 
   // Release the ui thread to paint and exec traverse.
   setTimeout(() => {
-    if (typeof figma.getLocalPaintStyles === "function") {
+    if (typeof figma.getLocalPaintStyles === 'function') {
       getLocalStyles();
     } else {
       traverse(figma.root);
     }
-    console.log("count", count);
-    if (format === "css") {
+    console.log('count', count);
+    if (format === 'css') {
       generatedCode += `:root {\n`;
     }
 
@@ -62,10 +62,10 @@ function generateCode(message: IMessageFormat) {
       generatedCode += preprocessorVariable;
     }
 
-    if (format !== "css") {
+    if (format !== 'css') {
       for (const key in textStyles) {
         const element = textStyles[key];
-        const mixinName = formatVariable(key, format).replace(/^\$|\@/g, "");
+        const mixinName = formatVariable(key, format).replace(/^\$|\@/g, '');
         let value: string = `${getMixinPrefix(format, mixinName)} {\n`;
         for (const cssRule in element) {
           const cssValue = element[cssRule];
@@ -88,10 +88,10 @@ function getLocalStyles() {
   const paintStyles = figma.getLocalPaintStyles();
   paintStyles.forEach((style: PaintStyle) => {
     // Prepare style
-    if (!style.paints || !style.paints.length || !style.paints[0]["color"]) {
+    if (!style.paints || !style.paints.length || !style.paints[0]['color']) {
       return;
     }
-    const color = style.paints[0]["color"];
+    const color = style.paints[0]['color'];
     const opacity = style.paints[0].opacity;
     const val = getColorValue(color, opacity);
 
@@ -104,18 +104,18 @@ function getLocalStyles() {
   tStyles.forEach((style: TextStyle) => {
     let textValues = {};
     if (style.fontSize) {
-      textValues["font-size"] = `${style.fontSize}px`;
+      textValues['font-size'] = `${style.fontSize}px`;
     }
     if (style.fontName && style.fontName.style) {
-      textValues["font-family"] = `"${style.fontName.family}"`;
+      textValues['font-family'] = `"${style.fontName.family}"`;
       const fontStyle = style.fontName.style.toLowerCase();
-      const fontStyleValue = fontStyle === "regular" ? "normal" : fontStyle;
-      textValues["font-style"] = fontStyleValue;
+      const fontStyleValue = fontStyle === 'regular' ? 'normal' : fontStyle;
+      textValues['font-style'] = fontStyleValue;
     }
 
     // TODO by UNIT
-    if (style.lineHeight && style.lineHeight["value"]) {
-      textValues["line-height"] = style.lineHeight["value"] + "px";
+    if (style.lineHeight && style.lineHeight['value']) {
+      textValues['line-height'] = style.lineHeight['value'] + 'px';
     }
     textStyles[style.name] = textValues;
     count++;
@@ -127,11 +127,11 @@ function traverse(node: BaseNode) {
     return;
   }
 
-  if ("children" in node) {
-    if (node.type !== "INSTANCE") {
+  if ('children' in node) {
+    if (node.type !== 'INSTANCE') {
       for (const child of node.children) {
         traverse(child);
-        if (child.type === "FRAME") {
+        if (child.type === 'FRAME') {
           const styleId: any = child.backgroundStyleId;
           const style = figma.getStyleById(styleId);
 
@@ -139,15 +139,15 @@ function traverse(node: BaseNode) {
             continue;
           }
 
-          console.log("FRAME", style);
+          console.log('FRAME', style);
           const key = style.name;
           if (colorStyles[key]) {
             continue;
           }
 
           // Prepare style
-          const color = style["paints"][0].color;
-          const opacity = style["paints"][0].opacity;
+          const color = style['paints'][0].color;
+          const opacity = style['paints'][0].opacity;
           const val = getColorValue(color, opacity);
 
           // Count styles
@@ -155,7 +155,7 @@ function traverse(node: BaseNode) {
           count++;
         }
 
-        if (child.type === "RECTANGLE" && child.fillStyleId) {
+        if (child.type === 'RECTANGLE' && child.fillStyleId) {
           const styleId: any = child.fillStyleId;
           const style = figma.getStyleById(styleId);
 
@@ -169,8 +169,8 @@ function traverse(node: BaseNode) {
           }
 
           // Prepare style
-          const color = style["paints"][0].color;
-          const opacity = style["paints"][0].opacity;
+          const color = style['paints'][0].color;
+          const opacity = style['paints'][0].opacity;
           const val = getColorValue(color, opacity);
 
           // Count styles
@@ -178,10 +178,10 @@ function traverse(node: BaseNode) {
           count++;
         }
 
-        if (child.type === "TEXT") {
+        if (child.type === 'TEXT') {
           console.log(child);
           const styleId: any = child.textStyleId;
-          if (!styleId || typeof styleId !== "string") {
+          if (!styleId || typeof styleId !== 'string') {
             continue;
           }
 
@@ -199,13 +199,13 @@ function traverse(node: BaseNode) {
           }
 
           let textValues = {};
-          textValues["font-size"] = `${style.fontSize}px`;
-          textValues["font-family"] = `"${style.fontName.family}"`;
+          textValues['font-size'] = `${style.fontSize}px`;
+          textValues['font-family'] = `"${style.fontName.family}"`;
           const fontStyle = style.fontName.style.toLowerCase();
-          const fontStyleValue = fontStyle === "regular" ? "normal" : fontStyle;
-          textValues["font-style"] = fontStyleValue;
+          const fontStyleValue = fontStyle === 'regular' ? 'normal' : fontStyle;
+          textValues['font-style'] = fontStyleValue;
           // TODO by UNIT
-          textValues["line-height"] = style.lineHeight["value"] + "px";
+          textValues['line-height'] = style.lineHeight['value'] + 'px';
           textStyles[key] = textValues;
           count++;
         }
