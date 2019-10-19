@@ -1,0 +1,118 @@
+@import '../../figma-plugin-ui-css-0.5/css/scss/main.scss';
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.ui__wrapper {
+  user-select: none;
+  background: white;
+
+  display: grid;
+  grid-template-rows: 254px 300px 62px;
+  overflow: hidden;
+}
+
+.ui__options {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: $small;
+  border-bottom: 1px solid $figma-silver;
+}
+
+.ui__output {
+  overflow-x: hidden;
+  overflow-y: scroll;
+
+  height: 100% !important;
+
+  > pre[class*='language-'] {
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+    padding: $medium !important;
+    overflow: inherit !important;
+
+    background: #f5f5f5 !important;
+    user-select: text;
+  }
+}
+
+.ui__toolbar-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $medium;
+  border-top: 1px solid $figma-silver;
+}
+
+.ui__input-wrapper {
+  display: flex;
+  align-items: center;
+  > * {
+    width: 50% !important;
+  }
+  .ui__select {
+    margin-right: $medium;
+  }
+}
+
+.ui__section-title {
+  @extend .section-title;
+}
+
+.ui__label {
+  @extend .label;
+}
+
+.ui__select {
+  @extend .select-menu;
+  @extend .select-menu__button;
+}
+
+.ui__button {
+  @extend .button;
+}
+
+.ui__button--primary {
+  @extend .button--primary;
+}
+
+.ui__button--secondary {
+  @extend .button--secondary;
+}
+
+textarea.textarea {
+  display: none;
+  margin: 10px 0;
+  overflow: auto;
+  overflow-y: none;
+  width: 100%;
+}
+
+i {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+}
+
+.svg-container {
+  display: inline-block;
+  background: #eee;
+}
+
+pre::-webkit-scrollbar {
+  width: 5px;
+}
+
+pre::-webkit-scrollbar-track {
+  background-color: #eee;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}

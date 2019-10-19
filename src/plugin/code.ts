@@ -1,25 +1,26 @@
-import { formatVariable, getMixinPrefix, getColorValue } from './utils';
-import { OutputFormat, CommandType, IMessageFormat } from './interfaces';
+import { Utilities } from '../utilities';
+import { IMessageFormat } from '../interfaces';
+import { OUTPUT_FORMAT, COMMAND_TYPE } from '../constants';
 
 let count = 0;
 let colorStyles = {};
 let textStyles = {};
-let format: OutputFormat = 'scss';
+let format: OUTPUT_FORMAT = OUTPUT_FORMAT.SCSS;
 let currentGeneratedCode: string = '';
 
 // Display UI
 figma.showUI(__html__, {
-  height: 300,
+  height: 616,
   width: 500
 });
 
 // Define listener to message from the ui and choose what to do based on the command type
 figma.ui.onmessage = message => {
   switch (message.command) {
-    case CommandType.DOWNLOAD:
+    case COMMAND_TYPE.DOWNLOAD:
       download(message);
       break;
-    case CommandType.GENERATE_CODE:
+    case COMMAND_TYPE.GENERATE_CODE:
       generateCode(message);
       break;
 
@@ -37,7 +38,7 @@ function download(message: IMessageFormat) {
 // Iterate over the figma tree and fetch the styles.
 // Current support is text styles and color styles
 function generateCode(message: IMessageFormat) {
-  figma.ui.postMessage({ command: CommandType.CLEAN });
+  figma.ui.postMessage({ command: COMMAND_TYPE.CLEAN });
   let generatedCode = '';
 
   if (message.format) {
@@ -58,15 +59,15 @@ function generateCode(message: IMessageFormat) {
 
     for (const key in colorStyles) {
       const val = colorStyles[key];
-      const preprocessorVariable = `${formatVariable(key, format)}:${val};\n`;
+      const preprocessorVariable = `${Utilities.formatVariable(key, format)}:${val};\n`;
       generatedCode += preprocessorVariable;
     }
 
     if (format !== 'css') {
       for (const key in textStyles) {
         const element = textStyles[key];
-        const mixinName = formatVariable(key, format).replace(/^\$|\@/g, '');
-        let value: string = `${getMixinPrefix(format, mixinName)} {\n`;
+        const mixinName = Utilities.formatVariable(key, format).replace(/^\$|\@/g, '');
+        let value: string = `${Utilities.getMixinPrefix(format, mixinName)} {\n`;
         for (const cssRule in element) {
           const cssValue = element[cssRule];
           value += `\t${cssRule}:${cssValue};\n`;
@@ -93,7 +94,7 @@ function getLocalStyles() {
     }
     const color = style.paints[0]['color'];
     const opacity = style.paints[0].opacity;
-    const val = getColorValue(color, opacity);
+    const val = Utilities.getColorValue(color, opacity);
 
     // Count styles
     colorStyles[style.name] = val;
@@ -148,7 +149,7 @@ function traverse(node: BaseNode) {
           // Prepare style
           const color = style['paints'][0].color;
           const opacity = style['paints'][0].opacity;
-          const val = getColorValue(color, opacity);
+          const val = Utilities.getColorValue(color, opacity);
 
           // Count styles
           colorStyles[key] = val;
@@ -171,7 +172,7 @@ function traverse(node: BaseNode) {
           // Prepare style
           const color = style['paints'][0].color;
           const opacity = style['paints'][0].opacity;
-          const val = getColorValue(color, opacity);
+          const val = Utilities.getColorValue(color, opacity);
 
           // Count styles
           colorStyles[key] = val;

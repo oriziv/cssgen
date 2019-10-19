@@ -1,10 +1,12 @@
-import '../node_modules/prismjs/themes/prism.css';
-import '../node_modules/file-saver/dist/FileSaver.js';
-import '../node_modules/prismjs';
-import '../node_modules/prismjs/components/prism-scss';
-import '../node_modules/prismjs/components/prism-less';
-import '../node_modules/prismjs/components/prism-stylus';
+import '../../node_modules/prismjs/themes/prism.css';
+import '../../node_modules/file-saver/dist/FileSaver.js';
+import '../../node_modules/prismjs';
+import '../../node_modules/prismjs/components/prism-scss';
+import '../../node_modules/prismjs/components/prism-less';
+import '../../node_modules/prismjs/components/prism-stylus';
 import './ui.scss';
+import { IMessageFormat } from '../interfaces';
+import { COMMAND_TYPE, OUTPUT_FORMAT } from '../constants';
 
 declare var Prism: any;
 
@@ -15,26 +17,24 @@ const downloadButton = document.querySelector<HTMLButtonElement>('#download');
 const copyButton = document.querySelector<HTMLButtonElement>('#copy');
 const textarea = document.querySelector<HTMLTextAreaElement>('#generatedCode');
 const selectedFormat = document.querySelector<HTMLSelectElement>('#codeFormat');
+const selectedFormatValue = selectedFormat.value as OUTPUT_FORMAT;
+
+function postMessage(message: IMessageFormat, targetOrigin: string = '*') {
+  parent.postMessage({ pluginMessage: message }, '*');
+}
 
 generateButton.addEventListener('click', event => {
-  parent.postMessage(
-    {
-      pluginMessage: {
-        command: 'GENERATE_CODE',
-        format: selectedFormat.value
-      }
-    },
-    '*'
-  );
+  postMessage({
+    command: COMMAND_TYPE.GENERATE_CODE,
+    format: selectedFormatValue
+  });
 });
 
 downloadButton.addEventListener('click', event => {
-  parent.postMessage(
-    {
-      pluginMessage: { command: 'DOWNLOAD', format: selectedFormat.value }
-    },
-    '*'
-  );
+  postMessage({
+    command: COMMAND_TYPE.DOWNLOAD,
+    format: selectedFormatValue
+  });
   const file = new File([textarea.value], 'styles.' + selectedFormat.value, {
     type: 'text/plain;charset=utf-8'
   });
@@ -42,7 +42,7 @@ downloadButton.addEventListener('click', event => {
 });
 
 copyButton.addEventListener('click', event => {
-  parent.postMessage({ pluginMessage: { command: 'COPY', format: selectedFormat.value } }, '*');
+  postMessage({ command: COMMAND_TYPE.COPY, format: selectedFormatValue });
   selectText(codeElement);
   document.execCommand('copy');
 });
