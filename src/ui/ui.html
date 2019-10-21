@@ -4,53 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Generate Figma Styles (1.0.0)</title>
+    <title>Generate Figma Styles <%= require('../../package.json') %>></title>
   </head>
   <body>
-    <div class="ui__wrapper">
-      <div class="ui__options">
-        <div class="ui__section-title">Plugin Options</div>
-
-        <div class="ui__input-wrapper">
-          <div class="ui__label">Output</div>
-
-          <select class="ui__select" name="format" id="codeFormat">
-            <option value="scss">SCSS</option>
-            <option value="less">LESS</option>
-            <option value="css">CSS</option>
-          </select>
-        </div>
-
-        <div class="ui__input-wrapper">
-            <div class="ui__label">Name format</div>
-  
-            <select class="ui__select" name="format" id="codeFormat">
-              <option value="camel-hyphen">Camel case with hyphens ($Blue-Dark)</option>
-              <option value="lowcase-hyphen">Lower case with hyphens ($blue-dark)</option>
-            </select>
-          </div>
-
-      </div>
-
-      <div class="ui__output">
-        <textarea readonly class="textarea" name="generatedCode" id="generatedCode" cols="30" rows="10"></textarea>
-        <pre><code style="font-size:12px;" class="language-scss" id="code"></code></pre>
-      </div>
-
-      <div class="ui__toolbar-bottom">
-        <button class="ui__button ui__button--primary" id="generate">
-          Generate
-        </button>
-
-        <div>
-          <button disabled id="download" class="ui__button ui__button--secondary">
-            Download
-          </button>
-          <button disabled id="copy" class="ui__button ui__button--secondary">
-            Copy
-          </button>
-        </div>
-      </div>
-    </div>
+    <div id="react"></div>
   </body>
 </html>

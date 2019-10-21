@@ -17,7 +17,7 @@ export namespace Utilities {
   }
 
   export function getMixinPrefix(fileFormat: OUTPUT_FORMAT, mixinName: string) {
-    return fileFormat === 'scss' ? `@mixin ${mixinName}` : `.${mixinName}()`;
+    return fileFormat === OUTPUT_FORMAT.SCSS ? `@mixin ${mixinName}` : `.${mixinName}()`;
   }
 
   export function formatVariable(variable: string, output: OUTPUT_FORMAT) {

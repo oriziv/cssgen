@@ -16,4 +16,6 @@ export interface ITextStyleOutput {
 export interface IMessageFormat extends Partial<MessageEvent> {
   format: OUTPUT_FORMAT;
   command: COMMAND_TYPE;
+  count?: number;
+  code?: any;
 }

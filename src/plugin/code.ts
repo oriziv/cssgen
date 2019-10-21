@@ -53,7 +53,7 @@ function generateCode(message: IMessageFormat) {
       traverse(figma.root);
     }
     console.log('count', count);
-    if (format === 'css') {
+    if (format === OUTPUT_FORMAT.CSS) {
       generatedCode += `:root {\n`;
     }
 
@@ -63,7 +63,7 @@ function generateCode(message: IMessageFormat) {
       generatedCode += preprocessorVariable;
     }
 
-    if (format !== 'css') {
+    if (format !== OUTPUT_FORMAT.CSS) {
       for (const key in textStyles) {
         const element = textStyles[key];
         const mixinName = Utilities.formatVariable(key, format).replace(/^\$|\@/g, '');
@@ -94,7 +94,7 @@ function getLocalStyles() {
     }
     const color = style.paints[0]['color'];
     const opacity = style.paints[0].opacity;
-    const val = Utilities.getColorValue(color, opacity);
+    const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1);
 
     // Count styles
     colorStyles[style.name] = val;

@@ -1,7 +1,10 @@
+// @ts-check
+
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
+/** @type {() => import('./node_modules/webpack/declarations/WebpackOptions').WebpackOptions} */
 module.exports = (env, argv) => ({
   mode: argv.mode === 'production' ? 'production' : 'development',
 
@@ -9,7 +12,7 @@ module.exports = (env, argv) => ({
   devtool: argv.mode === 'production' ? false : 'inline-source-map',
 
   entry: {
-    ui: './src/ui/ui.ts', // The entry point for your UI code
+    ui: './src/ui/ui.tsx', // The entry point for your UI code
     code: './src/plugin/code.ts' // The entry point for your plugin code
   },
 
@@ -21,7 +24,20 @@ module.exports = (env, argv) => ({
       // Enables including CSS by doing "import './file.css'" in your TypeScript code
       {
         test: /\.(css|scss)$/,
-        loader: [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'sass-loader' }]
+        loader: [
+          { loader: 'style-loader' },
+          {
+            loader: 'css-loader',
+            query: {
+              modules: {
+                localIdentName: '[name][local]'
+              },
+              localsConvention: 'camelCase',
+              sourceMap: true
+            }
+          },
+          { loader: 'sass-loader' }
+        ]
       },
 
       // Allows you to use "<%= require('./file.svg') %>" in your HTML code to get a data URI
@@ -37,8 +53,14 @@ module.exports = (env, argv) => ({
     path: path.resolve(__dirname, 'dist') // Compile into a folder called "dist"
   },
 
+  optimization: {
+    minimizer: undefined,
+    minimize: false
+  },
+
   // Tells Webpack to generate "ui.html" and to inline "ui.ts" into it
   plugins: [
+    // @ts-ignore
     new HtmlWebpackPlugin({
       template: './src/ui/ui.html',
       filename: 'ui.html',

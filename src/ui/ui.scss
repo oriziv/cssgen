@@ -5,7 +5,7 @@ body {
   margin: 0;
 }
 
-.ui__wrapper {
+.__ {
   user-select: none;
   background: white;
 
@@ -14,7 +14,7 @@ body {
   overflow: hidden;
 }
 
-.ui__options {
+.__options {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -23,7 +23,7 @@ body {
   border-bottom: 1px solid $figma-silver;
 }
 
-.ui__output {
+.__output {
   overflow-x: hidden;
   overflow-y: scroll;
 
@@ -41,47 +41,52 @@ body {
   }
 }
 
-.ui__toolbar-bottom {
+.__toolbar-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: $medium;
   border-top: 1px solid $figma-silver;
+  &__buttons {
+    button:first-child {
+      margin-right: 10px;
+    }
+  }
 }
 
-.ui__input-wrapper {
+.__input-wrapper {
   display: flex;
   align-items: center;
   > * {
     width: 50% !important;
   }
-  .ui__select {
+  .__select {
     margin-right: $medium;
   }
 }
 
-.ui__section-title {
+.__section-title {
   @extend .section-title;
 }
 
-.ui__label {
+.__label {
   @extend .label;
 }
 
-.ui__select {
+.__select {
   @extend .select-menu;
   @extend .select-menu__button;
 }
 
-.ui__button {
+.__button {
   @extend .button;
 }
 
-.ui__button--primary {
+.__button--primary {
   @extend .button--primary;
 }
 
-.ui__button--secondary {
+.__button--secondary {
   @extend .button--secondary;
 }
 

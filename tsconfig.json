@@ -1,18 +1,16 @@
 {
-    "compilerOptions": {
-        "module": "es2015",
-        "noImplicitAny": false,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "outDir": "dist/",
-        "sourceMap": true
-    },
-    "include": [
-        "src/**/*",
-        "node_modules/file-saver/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts"
-    ]
+  "compilerOptions": {
+    "module": "es2015",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": ["./node_modules/@types"],
+    "outDir": "dist/",
+    "strict": true,
+    "jsx": "react",
+    "sourceMap": true
+  },
+  "include": ["src/**/*", "node_modules/file-saver/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

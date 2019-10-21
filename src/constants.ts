@@ -1,8 +1,13 @@
 export enum OUTPUT_FORMAT {
-  SCSS = 'scss',
-  LESS = 'less',
-  CSS = 'css',
-  JSON = 'json'
+  SCSS = 'SCSS',
+  LESS = 'LESS',
+  CSS = 'CSS',
+  JSON = 'JSON'
+}
+
+export enum NAME_FORMAT {
+  CAMEL_HYPHEN = 'camel-hyphen',
+  LOWCASE_HYPHEN = 'lowcase-hyphen'
 }
 
 export enum COMMAND_TYPE {
