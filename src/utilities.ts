@@ -1,3 +1,5 @@
+import kebabCase from 'lodash-es/kebabCase';
+
 import { OUTPUT_FORMAT } from './constants';
 
 export namespace Utilities {
@@ -21,14 +23,16 @@ export namespace Utilities {
   }
 
   export function formatVariable(variable: string, output: OUTPUT_FORMAT) {
-    let res = variable.replace(/[^a-zA-Z\d\s\-\_]/g, '');
-    res = res
-      .replace(/[\.\s]/g, '-')
-      .replace(/^\d+/g, '')
-      .replace(/\-+/g, '-')
-      .replace(/^\-/, '');
-    const prefix = getVariablePrefix(output);
-    return prefix + res;
+    return getVariablePrefix(output) + kebabCase(variable.toLowerCase());
+
+    // let res = variable.replace(/[^a-zA-Z\d\s\-\_]/g, '');
+    // res = res
+    //   .replace(/[\.\s]/g, '-')
+    //   // .replace(/^\d+/g, '')
+    //   .replace(/\-+/g, '-')
+    //   .replace(/^\-/, '');
+    // const prefix = getVariablePrefix(output);
+    // return prefix + res;
   }
 
   // Get rgba(x,x,x,x) css value from color object and opacity

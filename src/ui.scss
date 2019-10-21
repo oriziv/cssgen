@@ -1,4 +1,4 @@
-@import '../../figma-plugin-ui-css-0.5/css/scss/main.scss';
+@import '../figma-plugin-ui-css-0.5/css/scss/main.scss';
 
 body {
   padding: 0;
@@ -6,12 +6,14 @@ body {
 }
 
 .__ {
-  user-select: none;
-  background: white;
-
+  height: 100%;
   display: grid;
-  grid-template-rows: 254px 300px 62px;
+  grid-template-rows: min-content minmax(300px, 1fr) 62px;
+
   overflow: hidden;
+  user-select: none;
+
+  background: white;
 }
 
 .__options {
@@ -21,6 +23,8 @@ body {
   align-items: stretch;
   padding: $small;
   border-bottom: 1px solid $figma-silver;
+
+  overflow-y: auto;
 }
 
 .__output {
@@ -28,6 +32,7 @@ body {
   overflow-y: scroll;
 
   height: 100% !important;
+  font-size: 12px;
 
   > pre[class*='language-'] {
     width: 100%;
@@ -90,7 +95,7 @@ body {
   @extend .button--secondary;
 }
 
-textarea.textarea {
+.__textarea {
   display: none;
   margin: 10px 0;
   overflow: auto;

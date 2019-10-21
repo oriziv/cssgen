@@ -12,8 +12,8 @@ module.exports = (env, argv) => ({
   devtool: argv.mode === 'production' ? false : 'inline-source-map',
 
   entry: {
-    ui: './src/ui/ui.tsx', // The entry point for your UI code
-    code: './src/plugin/code.ts' // The entry point for your plugin code
+    ui: './src/ui.tsx', // The entry point for your UI code
+    plugin: './src/plugin.ts' // The entry point for your plugin code
   },
 
   module: {
@@ -23,7 +23,7 @@ module.exports = (env, argv) => ({
 
       // Enables including CSS by doing "import './file.css'" in your TypeScript code
       {
-        test: /\.(css|scss)$/,
+        test: /\.(scss)$/,
         loader: [
           { loader: 'style-loader' },
           {
@@ -37,6 +37,19 @@ module.exports = (env, argv) => ({
             }
           },
           { loader: 'sass-loader' }
+        ]
+      },
+      {
+        test: /\.(css)$/,
+        loader: [
+          { loader: 'style-loader' },
+          {
+            loader: 'css-loader',
+            query: {
+              modules: false,
+              sourceMap: true
+            }
+          }
         ]
       },
 
@@ -62,7 +75,7 @@ module.exports = (env, argv) => ({
   plugins: [
     // @ts-ignore
     new HtmlWebpackPlugin({
-      template: './src/ui/ui.html',
+      template: './src/ui.html',
       filename: 'ui.html',
       inlineSource: '.(js)$',
       chunks: ['ui']

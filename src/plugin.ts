@@ -1,6 +1,6 @@
-import { Utilities } from '../utilities';
-import { IMessageFormat } from '../interfaces';
-import { OUTPUT_FORMAT, COMMAND_TYPE } from '../constants';
+import { Utilities } from './utilities';
+import { IMessageFormat } from './interfaces';
+import { OUTPUT_FORMAT, COMMAND_TYPE } from './constants';
 
 let count = 0;
 let colorStyles = {};
@@ -23,7 +23,6 @@ figma.ui.onmessage = message => {
     case COMMAND_TYPE.GENERATE_CODE:
       generateCode(message);
       break;
-
     default:
       break;
   }
@@ -59,7 +58,7 @@ function generateCode(message: IMessageFormat) {
 
     for (const key in colorStyles) {
       const val = colorStyles[key];
-      const preprocessorVariable = `${Utilities.formatVariable(key, format)}:${val};\n`;
+      const preprocessorVariable = `${Utilities.formatVariable(key, format)}: ${val};\n`;
       generatedCode += preprocessorVariable;
     }
 

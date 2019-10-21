@@ -1,8 +1,9 @@
 export enum OUTPUT_FORMAT {
   SCSS = 'SCSS',
   LESS = 'LESS',
-  CSS = 'CSS',
-  JSON = 'JSON'
+  CSS = 'CSS'
+  // TODO enable json output
+  // JSON = 'JSON'
 }
 
 export enum NAME_FORMAT {

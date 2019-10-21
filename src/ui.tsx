@@ -6,13 +6,17 @@ import 'prismjs/components/prism-less';
 import 'prismjs/components/prism-stylus';
 import 'file-saver/dist/FileSaver.js';
 
-import { IMessageFormat } from '../interfaces';
-import { COMMAND_TYPE, OUTPUT_FORMAT } from '../constants';
+import { IMessageFormat } from './interfaces';
+import { COMMAND_TYPE, OUTPUT_FORMAT } from './constants';
 
 /**
- * CSS imports
+ * CSS imports (global)
  */
 import 'prismjs/themes/prism.css';
+
+/**
+ * SCSS imports (local)
+ */
 import styles from './ui.scss';
 
 type OwnProps = {};
@@ -78,8 +82,14 @@ class UI extends React.Component<OwnProps, State> {
 
         <div className={styles.output}>
           {/* Hidden textarea to output the generated code */}
-          <textarea className="textarea" id="generatedCode" cols={30} rows={10} ref={this.textareaRef}></textarea>
-          {/*  */}
+          <textarea
+            className={styles.textarea}
+            id="generatedCode"
+            cols={30}
+            rows={10}
+            ref={this.textareaRef}
+          ></textarea>
+          {/* Prism highlighted code output */}
           <pre>
             <code className={`language-${this.state.outputFormat.toLowerCase()}`} ref={this.codeRef}></code>
           </pre>
@@ -98,7 +108,11 @@ class UI extends React.Component<OwnProps, State> {
             >
               Download
             </button>
-            <button disabled={disableButtons} className={`${styles.button} ${styles.buttonSecondary}`}>
+            <button
+              disabled={disableButtons}
+              className={`${styles.button} ${styles.buttonSecondary}`}
+              onClick={this.copy}
+            >
               Copy
             </button>
           </div>
@@ -108,7 +122,6 @@ class UI extends React.Component<OwnProps, State> {
   }
 
   handlePluginMessage = event => {
-    debugger;
     const data: { pluginMessage: IMessageFormat } = event.data;
 
     if (data.pluginMessage.command === COMMAND_TYPE.CLEAN && this.codeRef && this.codeRef.current) {
@@ -143,7 +156,10 @@ class UI extends React.Component<OwnProps, State> {
 
   copy = () => {
     this.postMessage({ command: COMMAND_TYPE.COPY, format: this.state.outputFormat });
-    this.selectText(this.codeRef);
+    if (!this.codeRef) {
+      return;
+    }
+    this.selectText(this.codeRef.current);
     document.execCommand('copy');
   };
 
@@ -156,7 +172,7 @@ class UI extends React.Component<OwnProps, State> {
     if (!(this.textareaRef && this.textareaRef.current)) {
       return;
     }
-    const file = new File([this.textareaRef.current.value], `styles.${this.state.outputFormat}`, {
+    const file = new File([this.textareaRef.current.value], `styles.${this.state.outputFormat.toLowerCase()}`, {
       type: 'text/plain;charset=utf-8'
     });
     saveAs(file);
