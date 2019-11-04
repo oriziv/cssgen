@@ -58,7 +58,10 @@ function generateCode(message: IMessageFormat) {
 
     for (const key in colorStyles) {
       const val = colorStyles[key];
-      const preprocessorVariable = `${Utilities.formatVariable(key, format)}: ${val};\n`;
+      const preprocessorVariable = `${Utilities.getVariablePrefix(format)}color-${Utilities.formatVariable(
+        key,
+        format
+      )}: ${val};\n`;
       generatedCode += preprocessorVariable;
     }
 
@@ -110,7 +113,7 @@ function getLocalStyles() {
       textValues['font-family'] = `"${style.fontName.family}"`;
       const fontStyle = style.fontName.style.toLowerCase();
       const fontStyleValue = fontStyle === 'regular' ? 'normal' : fontStyle;
-      textValues['font-style'] = fontStyleValue;
+      textValues['font-weight'] = fontStyleValue;
     }
 
     // TODO by UNIT

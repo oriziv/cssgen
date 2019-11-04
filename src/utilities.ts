@@ -19,11 +19,11 @@ export namespace Utilities {
   }
 
   export function getMixinPrefix(fileFormat: OUTPUT_FORMAT, mixinName: string) {
-    return fileFormat === OUTPUT_FORMAT.SCSS ? `@mixin ${mixinName}` : `.${mixinName}()`;
+    return fileFormat === OUTPUT_FORMAT.SCSS ? `@mixin font-${mixinName}` : `.font-${mixinName}()`;
   }
 
   export function formatVariable(variable: string, output: OUTPUT_FORMAT) {
-    return getVariablePrefix(output) + kebabCase(variable.toLowerCase());
+    return kebabCase(variable.toLowerCase());
 
     // let res = variable.replace(/[^a-zA-Z\d\s\-\_]/g, '');
     // res = res
