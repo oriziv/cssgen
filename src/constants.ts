@@ -3,7 +3,6 @@ export enum OUTPUT_FORMAT {
   LESS = 'LESS',
   CSS = 'CSS'
   // TODO enable json output
-  // JSON = 'JSON'
 }
 
 export enum NAME_FORMAT {
