@@ -1,98 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Generate Figma Styles (1.0.0)</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="button-container">
-            <button class="button button--primary" id="generate">Generate</button>
-        </div>
-        <div class="list-container">
-            <select class="select-menu select-menu__button" name="format" id="codeFormat">
-                <option value="scss">SCSS</option>
-                <option value="less">LESS</option>
-                <option value="css">CSS</option>
-            </select>
-        </div>
-        <div class="clear"></div>
-        <textarea readonly class="textarea" name="generatedCode" id="generatedCode" cols="30" rows="10" ></textarea>
-        <pre><code style="font-size:12px;" class="language-scss" id="code"></code></pre>
-        <button disabled id="download" class="button button--secondary-destructive">Download</button>
-        <button disabled id="copy" class="button button--secondary-destructive">Copy</button>
+      <div class="button-container">
+        <button class="button button--primary" id="generate">Generate</button>
+      </div>
+      <div class="list-container">
+        <select
+          class="select-menu select-menu__button"
+          name="format"
+          id="codeFormat"
+        >
+          <option value="scss">SCSS</option>
+          <option value="less">LESS</option>
+          <option value="css">CSS</option>
+        </select>
+      </div>
+      <div class="clear"></div>
+      <textarea
+        readonly
+        class="textarea"
+        name="generatedCode"
+        id="generatedCode"
+        cols="30"
+        rows="10"
+      ></textarea>
+      <pre><code style="font-size:12px;" class="language-scss" id="code"></code></pre>
+      <button
+        disabled
+        id="download"
+        class="button button--secondary-destructive"
+      >
+        Download
+      </button>
+      <button disabled id="copy" class="button button--secondary-destructive">
+        Copy
+      </button>
     </div>
-</body>
-<script>
-    const generateButton = document.querySelector('#generate');
-    const codeElement = document.querySelector('#code');
-    const pre = document.querySelector('pre');
-    const downloadButton = document.querySelector('#download');
-    const copyButton = document.querySelector('#copy');
-    const textarea = document.querySelector('#generatedCode');
-    const selectedFormat = document.querySelector('#codeFormat');
+  </body>
+  <script>
+    const generateButton = document.querySelector("#generate");
+    const codeElement = document.querySelector("#code");
+    const pre = document.querySelector("pre");
+    const downloadButton = document.querySelector("#download");
+    const copyButton = document.querySelector("#copy");
+    const textarea = document.querySelector("#generatedCode");
+    const selectedFormat = document.querySelector("#codeFormat");
 
-    generateButton.addEventListener('click', (event)=> {
-        parent.postMessage({ pluginMessage: {command:'GENERATE_CODE', format: selectedFormat.value} }, '*');
+    generateButton.addEventListener("click", event => {
+      parent.postMessage(
+        {
+          pluginMessage: {
+            command: "GENERATE_CODE",
+            format: selectedFormat.value
+          }
+        },
+        "*"
+      );
     });
 
-    downloadButton.addEventListener('click', (event)=> {
-        parent.postMessage({ pluginMessage: {command:'DOWNLOAD', format: selectedFormat.value} }, '*');
-        const file = new File([textarea.value], "styles." + selectedFormat.value, {type: "text/plain;charset=utf-8"});
-        saveAs(file);
+    downloadButton.addEventListener("click", event => {
+      parent.postMessage(
+        {
+          pluginMessage: { command: "DOWNLOAD", format: selectedFormat.value }
+        },
+        "*"
+      );
+      const file = new File(
+        [textarea.value],
+        "styles." + selectedFormat.value,
+        { type: "text/plain;charset=utf-8" }
+      );
+      saveAs(file);
     });
-    copyButton.addEventListener('click', (event)=> {
-        parent.postMessage({ pluginMessage: {command:'COPY', format: selectedFormat.value} }, '*');
-        selectText(codeElement);
-        document.execCommand('copy');
+    copyButton.addEventListener("click", event => {
+      parent.postMessage(
+        { pluginMessage: { command: "COPY", format: selectedFormat.value } },
+        "*"
+      );
+      selectText(codeElement);
+      document.execCommand("copy");
     });
 
-    window.addEventListener('message', (event)=> {
-        if(event.data.pluginMessage.command === 'clean') {
-          codeElement.innerHTML = "";
-          downloadButton.setAttribute('disabled', true);
-          copyButton.setAttribute('disabled', true);
-          return;
-        }
+    window.addEventListener("message", event => {
+      if (event.data.pluginMessage.command === "clean") {
+        codeElement.innerHTML = "";
+        downloadButton.setAttribute("disabled", true);
+        copyButton.setAttribute("disabled", true);
+        return;
+      }
 
-        if(event.data.pluginMessage.count === 0) {
-          codeElement.innerHTML = '<span>No styles were found<span>';
-          return;
-        }
+      if (event.data.pluginMessage.count === 0) {
+        codeElement.innerHTML = "<span>No styles were found<span>";
+        return;
+      }
 
-        if(!event.data.pluginMessage || !event.data.pluginMessage.code) {
-          codeElement.innerHTML = "";
-          downloadButton.setAttribute('disabled', true);
-          copyButton.setAttribute('disabled', true);
-          return;
-        }
+      if (!event.data.pluginMessage || !event.data.pluginMessage.code) {
+        codeElement.innerHTML = "";
+        downloadButton.setAttribute("disabled", true);
+        copyButton.setAttribute("disabled", true);
+        return;
+      }
 
-
-        downloadButton.removeAttribute('disabled');
-        copyButton.removeAttribute('disabled');
-        const code = event.data.pluginMessage.code;
-        textarea.value = code;
-        pre.setAttribute('class', 'language-'+selectedFormat.value);
-        const html = Prism.highlight(code, Prism.languages[selectedFormat.value], selectedFormat.value);
-        codeElement.innerHTML = html;
+      downloadButton.removeAttribute("disabled");
+      copyButton.removeAttribute("disabled");
+      const code = event.data.pluginMessage.code;
+      textarea.value = code;
+      pre.setAttribute("class", "language-" + selectedFormat.value);
+      const html = Prism.highlight(
+        code,
+        Prism.languages[selectedFormat.value],
+        selectedFormat.value
+      );
+      codeElement.innerHTML = html;
     });
 
     function selectText(node) {
-        if (document.body.createTextRange) {
-            const range = document.body.createTextRange();
-            range.moveToElementText(node);
-            range.select();
-        } else if (window.getSelection) {
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(node);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        } else {
-            console.warn("Could not select text in node: Unsupported browser.");
-        }
+      if (document.body.createTextRange) {
+        const range = document.body.createTextRange();
+        range.moveToElementText(node);
+        range.select();
+      } else if (window.getSelection) {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } else {
+        console.warn("Could not select text in node: Unsupported browser.");
+      }
     }
-</script>
+  </script>
 </html>
