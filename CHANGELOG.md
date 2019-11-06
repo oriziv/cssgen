@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/noveo-io/figma-sass-less-plugin/compare/v1.1.0...v1.1.1) (2019-11-06)
+
+
+### Bug Fixes
+
+* **constants:** remove a comment ([0ce3338](https://github.com/noveo-io/figma-sass-less-plugin/commit/0ce333887956bf6b13d0fd90c4c34966a25dbfdc))
+
 ## [1.1.0](https://github.com/noveo-io/figma-sass-less-plugin/compare/v1.0.3...v1.1.0) (2019-11-06)
 
 
