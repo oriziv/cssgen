@@ -1,0 +1,6 @@
+dist/**/*
+figma-plugin-ui-css-0.5
+node_modules
+package-lock.json
+*.yml
+*.yaml

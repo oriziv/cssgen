@@ -1,3 +1,5 @@
+import { OUTPUT_FORMAT, COMMAND_TYPE } from './constants';
+
 export interface IOutputStyle {
   fills: IFillsOutput;
   textStyles: ITextStyleOutput;
@@ -11,13 +13,9 @@ export interface ITextStyleOutput {
   [key: string]: {};
 }
 
-export type OutputFormat = "scss" | "less" | "css";
-export enum CommandType {
-  GENERATE_CODE = "GENERATE_CODE",
-  DOWNLOAD = "DOWNLOAD",
-  CLEAN = "CLEAN"
-}
-export interface IMessageFormat extends MessageEvent {
-  format: OutputFormat;
-  command: CommandType;
+export interface IMessageFormat extends Partial<MessageEvent> {
+  format: OUTPUT_FORMAT;
+  command: COMMAND_TYPE;
+  count?: number; // number of styles (colors, text styles, etc) found by the plugin
+  code?: any;
 }
