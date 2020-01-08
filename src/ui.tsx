@@ -74,7 +74,6 @@ class UI extends React.Component<OwnProps, State> {
             <div className={styles.label}>Name format</div>
 
             <select className={styles.select} name="nameFormat" id="codeFormat">
-              <option value="camel-hyphen">Camel case with hyphens ($Blue-Dark)</option>
               <option value="lowcase-hyphen">Lower case with hyphens ($blue-dark)</option>
             </select>
           </div>
