@@ -1,11 +1,12 @@
 import { Utilities } from './utilities';
 import { IMessageFormat } from './interfaces';
-import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles } from './constants';
+import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles, NAME_FORMAT } from './constants';
 
 let count = 0;
 let colorStyles = {};
 let textStyles = {};
 let format: OUTPUT_FORMAT = OUTPUT_FORMAT.SCSS;
+let nameFormat: NAME_FORMAT = NAME_FORMAT.KEBAB_HYPHEN;
 let currentGeneratedCode: string = '';
 
 // Display UI
@@ -44,6 +45,10 @@ function generateCode(message: IMessageFormat) {
     format = message.format;
   }
 
+  if (message.nameFormat) {
+    nameFormat = message.nameFormat;
+  }
+
   // Release the ui thread to paint and exec traverse.
   setTimeout(() => {
     if (typeof figma.getLocalPaintStyles === 'function') {
@@ -51,16 +56,15 @@ function generateCode(message: IMessageFormat) {
     } else {
       traverse(figma.root);
     }
-    console.log('count', count);
     if (format === OUTPUT_FORMAT.CSS) {
       generatedCode += `:root {\n`;
     }
 
     for (const key in colorStyles) {
       const val = colorStyles[key];
-      const preprocessorVariable = `${Utilities.getVariablePrefix(format)}color-${Utilities.formatVariable(
-        key,
-        format
+      const preprocessorVariable = `${Utilities.getVariablePrefix(format)}${Utilities.formatVariable(
+        `color-${key}`,
+        nameFormat
       )}: ${val};\n`;
       generatedCode += preprocessorVariable;
     }
@@ -70,8 +74,8 @@ function generateCode(message: IMessageFormat) {
 
     for (const key in textStyles) {
       const element = textStyles[key];
-      const mixinName = Utilities.formatVariable(key, format).replace(/^\$|\@/g, '');
-      let value: string = `${Utilities.getMixinPrefix(format, mixinName)} {\n`;
+      const mixinName = Utilities.formatVariable(key, nameFormat).replace(/^\$|\@/g, '');
+      let value: string = `${Utilities.getMixinPrefix(format, mixinName, nameFormat)} {\n`;
       for (const cssRule in element) {
         const cssValue = element[cssRule];
         value += `\t${cssRule}:${cssValue};\n`;
@@ -104,7 +108,6 @@ function getLocalStyles() {
 
   const tStyles = figma.getLocalTextStyles();
   tStyles.forEach((style: TextStyle) => {
-    console.log(style);
     let textValues = {};
     if (style.fontSize) {
       textValues['font-size'] = `${style.fontSize}px`;
@@ -142,7 +145,6 @@ function traverse(node: BaseNode) {
             continue;
           }
 
-          console.log('FRAME', style);
           const key = style.name;
           if (colorStyles[key]) {
             continue;
@@ -182,7 +184,6 @@ function traverse(node: BaseNode) {
         }
 
         if (child.type === 'TEXT') {
-          console.log(child);
           const styleId: any = child.textStyleId;
           if (!styleId || typeof styleId !== 'string') {
             continue;
@@ -194,7 +195,6 @@ function traverse(node: BaseNode) {
           if (!style) {
             continue;
           }
-          console.log(style);
           const key = style.name;
           // Check that the key is not already calculated
           if (textStyles[key]) {

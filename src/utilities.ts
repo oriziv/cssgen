@@ -1,6 +1,9 @@
 import kebabCase from 'lodash-es/kebabCase';
+import camelCase from 'lodash-es/camelCase';
+import snakeCase from 'lodash-es/snakeCase';
+import capitalize from 'lodash-es/capitalize';
 
-import { OUTPUT_FORMAT } from './constants';
+import { NAME_FORMAT, OUTPUT_FORMAT } from './constants';
 
 export namespace Utilities {
   export function camelCaseToDash(myStr) {
@@ -18,32 +21,40 @@ export namespace Utilities {
     }
   }
 
-  export function getMixinPrefix(fileFormat: OUTPUT_FORMAT, mixinName: string) {
+  export function getMixinPrefix(fileFormat: OUTPUT_FORMAT, mixinName: string, nameFormat = NAME_FORMAT.KEBAB_HYPHEN, styleType='text') {
     let mixinPrefixResult = '';
+    let name = formatVariable(`${styleType}-style-${mixinName}`,nameFormat);
     switch (fileFormat) {
       case OUTPUT_FORMAT.SCSS:
-        mixinPrefixResult = `@mixin font-${mixinName}`;
+        mixinPrefixResult = `@mixin ${name}`;
         break;
       case OUTPUT_FORMAT.LESS:
-        mixinPrefixResult = `.font-${mixinName}()`;
+        mixinPrefixResult = `.${name}`;
       default:
-        mixinPrefixResult = `.font-${mixinName}`;
+        mixinPrefixResult = `.${name}`;
         break;
     }
     return mixinPrefixResult;
   }
 
-  export function formatVariable(variable: string, output: OUTPUT_FORMAT) {
-    return kebabCase(variable.toLowerCase());
+  export function formatVariable(variable: string, output: NAME_FORMAT) {
+    let formatted = '';
 
-    // let res = variable.replace(/[^a-zA-Z\d\s\-\_]/g, '');
-    // res = res
-    //   .replace(/[\.\s]/g, '-')
-    //   // .replace(/^\d+/g, '')
-    //   .replace(/\-+/g, '-')
-    //   .replace(/^\-/, '');
-    // const prefix = getVariablePrefix(output);
-    // return prefix + res;
+    switch (output) {
+      case NAME_FORMAT.CAMEL_HYPHEN:
+        formatted = camelCase(variable);
+        break;
+      case NAME_FORMAT.SNAKE_HYPHEN:
+        formatted = snakeCase(variable);
+        break;
+      case NAME_FORMAT.PASCAL_HYPHEN:
+        formatted = variable.charAt(0).toUpperCase() + camelCase(variable.slice(1));
+        break;
+      default:
+        formatted = kebabCase(variable);
+        break;
+    }
+    return formatted;
   }
 
   // Get rgba(x,x,x,x) css value from color object and opacity

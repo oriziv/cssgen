@@ -6,8 +6,10 @@ export enum OUTPUT_FORMAT {
 }
 
 export enum NAME_FORMAT {
-  CAMEL_HYPHEN = 'camel-hyphen',
-  LOWCASE_HYPHEN = 'lowcase-hyphen'
+  KEBAB_HYPHEN = 'kebab-case',
+  CAMEL_HYPHEN = 'camelCase',
+  PASCAL_HYPHEN = 'PascalCase',
+  SNAKE_HYPHEN = 'snake_case'
 }
 
 export enum COMMAND_TYPE {

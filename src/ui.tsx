@@ -7,7 +7,7 @@ import 'prismjs/components/prism-stylus';
 import 'file-saver/dist/FileSaver.js';
 
 import { IMessageFormat } from './interfaces';
-import { COMMAND_TYPE, OUTPUT_FORMAT } from './constants';
+import { COMMAND_TYPE, NAME_FORMAT, OUTPUT_FORMAT } from './constants';
 
 /**
  * CSS imports (global)
@@ -23,6 +23,7 @@ type OwnProps = {};
 
 type State = {
   outputFormat: OUTPUT_FORMAT;
+  nameFormat: NAME_FORMAT;
 };
 
 class UI extends React.Component<OwnProps, State> {
@@ -32,6 +33,7 @@ class UI extends React.Component<OwnProps, State> {
   constructor(props: OwnProps) {
     super(props);
     this.state = {
+      nameFormat: NAME_FORMAT.KEBAB_HYPHEN,
       outputFormat: OUTPUT_FORMAT.SCSS
     };
     this.textareaRef = React.createRef();
@@ -73,8 +75,16 @@ class UI extends React.Component<OwnProps, State> {
           <div className={styles.inputWrapper}>
             <div className={styles.label}>Name format</div>
 
-            <select className={styles.select} name="nameFormat" id="codeFormat">
-              <option value="lowcase-hyphen">Lower case with hyphens ($blue-dark)</option>
+            <select
+            className={styles.select}
+            name="nameFormat" id="codeFormat"
+            onChange={event => {
+              this.setState({ nameFormat: event.target.value as NAME_FORMAT });
+            }}
+            >
+            {Object['values'](NAME_FORMAT).map(format => (
+                <option value={format}>{format}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -148,13 +158,14 @@ class UI extends React.Component<OwnProps, State> {
 
   generate = () => {
     this.postMessage({
+      nameFormat: this.state.nameFormat,
       command: COMMAND_TYPE.GENERATE_CODE,
       format: this.state.outputFormat
     });
   };
 
   copy = () => {
-    this.postMessage({ command: COMMAND_TYPE.COPY, format: this.state.outputFormat });
+    this.postMessage({ command: COMMAND_TYPE.COPY, format: this.state.outputFormat, nameFormat: this.state.nameFormat });
     if (!this.codeRef) {
       return;
     }
@@ -165,7 +176,8 @@ class UI extends React.Component<OwnProps, State> {
   download = () => {
     this.postMessage({
       command: COMMAND_TYPE.DOWNLOAD,
-      format: this.state.outputFormat
+      format: this.state.outputFormat,
+      nameFormat: this.state.nameFormat
     });
 
     if (!(this.textareaRef && this.textareaRef.current)) {
