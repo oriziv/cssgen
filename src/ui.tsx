@@ -64,7 +64,7 @@ class UI extends React.Component<OwnProps, State> {
                 this.setState({ outputFormat: event.target.value as OUTPUT_FORMAT });
               }}
             >
-              {Object.values(OUTPUT_FORMAT).map(format => (
+              {Object['values'](OUTPUT_FORMAT).map(format => (
                 <option value={format}>{format}</option>
               ))}
             </select>
