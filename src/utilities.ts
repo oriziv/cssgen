@@ -14,12 +14,23 @@ export namespace Utilities {
       case OUTPUT_FORMAT.LESS:
         return '@';
       case OUTPUT_FORMAT.CSS:
-        return '--';
+        return '\t--';
     }
   }
 
   export function getMixinPrefix(fileFormat: OUTPUT_FORMAT, mixinName: string) {
-    return fileFormat === OUTPUT_FORMAT.SCSS ? `@mixin font-${mixinName}` : `.font-${mixinName}()`;
+    let mixinPrefixResult = '';
+    switch (fileFormat) {
+      case OUTPUT_FORMAT.SCSS:
+        mixinPrefixResult = `@mixin font-${mixinName}`;
+        break;
+      case OUTPUT_FORMAT.LESS:
+        mixinPrefixResult = `.font-${mixinName}()`;
+      default:
+        mixinPrefixResult = `.font-${mixinName}`;
+        break;
+    }
+    return mixinPrefixResult;
   }
 
   export function formatVariable(variable: string, output: OUTPUT_FORMAT) {

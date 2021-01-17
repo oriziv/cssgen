@@ -64,21 +64,20 @@ function generateCode(message: IMessageFormat) {
       )}: ${val};\n`;
       generatedCode += preprocessorVariable;
     }
+    if (format === OUTPUT_FORMAT.CSS) {
+      generatedCode += `}\n`;
+    }
 
-    if (format !== OUTPUT_FORMAT.CSS) {
-      for (const key in textStyles) {
-        const element = textStyles[key];
-        const mixinName = Utilities.formatVariable(key, format).replace(/^\$|\@/g, '');
-        let value: string = `${Utilities.getMixinPrefix(format, mixinName)} {\n`;
-        for (const cssRule in element) {
-          const cssValue = element[cssRule];
-          value += `\t${cssRule}:${cssValue};\n`;
-        }
-        value += `}\n`;
-        generatedCode += value;
+    for (const key in textStyles) {
+      const element = textStyles[key];
+      const mixinName = Utilities.formatVariable(key, format).replace(/^\$|\@/g, '');
+      let value: string = `${Utilities.getMixinPrefix(format, mixinName)} {\n`;
+      for (const cssRule in element) {
+        const cssValue = element[cssRule];
+        value += `\t${cssRule}:${cssValue};\n`;
       }
-    } else {
-      generatedCode += `}`;
+      value += `}\n`;
+      generatedCode += value;
     }
     figma.ui.postMessage({ code: generatedCode, count: count });
     currentGeneratedCode = generatedCode;
