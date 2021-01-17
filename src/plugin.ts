@@ -131,9 +131,9 @@ function getLocalStyles() {
       const opacity = effect.color.a;
       const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1);
       // Count styles
-      textValues[
-        'box-shadow'
-      ] = `${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px${effect.spread?' '+effect.spread+'px':''} ${val}`;
+      textValues['box-shadow'] = `${effect.offset.x.toFixed(2)}px ${effect.offset.y.toFixed(
+        2
+      )}px ${effect.radius.toFixed(2)}px${effect.spread ? ' ' + effect.spread.toFixed(2) + 'px' : ''} ${val}`;
       effectStyles[style.name] = textValues;
     }
     count++;
