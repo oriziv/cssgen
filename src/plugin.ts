@@ -115,8 +115,10 @@ function getLocalStyles() {
     if (style.fontName && style.fontName.style) {
       textValues['font-family'] = `"${style.fontName.family}"`;
       const fontStyle = style.fontName.style;
-      textValues['font-weight'] = FigmaTextStyles[fontStyle].fontWeight;
-      textValues['font-style'] = FigmaTextStyles[fontStyle].fontStyle;
+      if(FigmaTextStyles[fontStyle]) {
+        textValues['font-weight'] = FigmaTextStyles[fontStyle].fontWeight;
+        textValues['font-style'] = FigmaTextStyles[fontStyle].fontStyle;
+      }
     }
 
     // TODO by UNIT
