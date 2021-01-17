@@ -1,6 +1,6 @@
 import { Utilities } from './utilities';
 import { IMessageFormat } from './interfaces';
-import { OUTPUT_FORMAT, COMMAND_TYPE } from './constants';
+import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles } from './constants';
 
 let count = 0;
 let colorStyles = {};
@@ -105,15 +105,16 @@ function getLocalStyles() {
 
   const tStyles = figma.getLocalTextStyles();
   tStyles.forEach((style: TextStyle) => {
+    console.log(style);
     let textValues = {};
     if (style.fontSize) {
       textValues['font-size'] = `${style.fontSize}px`;
     }
     if (style.fontName && style.fontName.style) {
       textValues['font-family'] = `"${style.fontName.family}"`;
-      const fontStyle = style.fontName.style.toLowerCase();
-      const fontStyleValue = fontStyle === 'regular' ? 'normal' : fontStyle;
-      textValues['font-weight'] = fontStyleValue;
+      const fontStyle = style.fontName.style;
+      textValues['font-weight'] = FigmaTextStyles[fontStyle].fontWeight;
+      textValues['font-style'] = FigmaTextStyles[fontStyle].fontStyle;
     }
 
     // TODO by UNIT
