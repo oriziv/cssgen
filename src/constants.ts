@@ -43,7 +43,7 @@ export const FigmaTextStyles = {
     fontWeight: 900
   },
   "Thin Italic": {
-    fontStyle: 'normal',
+    fontStyle: 'italic',
     fontWeight: 100
   },
   "Light Italic": {
