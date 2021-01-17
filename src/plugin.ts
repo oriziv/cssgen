@@ -121,7 +121,6 @@ function getLocalStyles() {
 
   const localEffectStyles = figma.getLocalEffectStyles();
   localEffectStyles.forEach((style: EffectStyle) => {
-    console.log(style);
     let textValues = {};
     if (!style.effects || !style.effects.length || !style.effects[0]['color']) {
       return;
