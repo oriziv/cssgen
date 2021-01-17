@@ -60,6 +60,7 @@ class UI extends React.Component<OwnProps, State> {
             <div className={styles.label}>Output</div>
 
             <select
+              id="outputFormat"
               className={styles.select}
               value={this.state.outputFormat}
               onChange={event => {
@@ -67,7 +68,7 @@ class UI extends React.Component<OwnProps, State> {
               }}
             >
               {Object['values'](OUTPUT_FORMAT).map(format => (
-                <option value={format}>{format}</option>
+                <option key={format} value={format}>{format}</option>
               ))}
             </select>
           </div>
@@ -77,13 +78,13 @@ class UI extends React.Component<OwnProps, State> {
 
             <select
             className={styles.select}
-            name="nameFormat" id="codeFormat"
+            name="nameFormat" id="nameFormat"
             onChange={event => {
               this.setState({ nameFormat: event.target.value as NAME_FORMAT });
             }}
             >
             {Object['values'](NAME_FORMAT).map(format => (
-                <option value={format}>{format}</option>
+                <option key={format} value={format}>{format}</option>
               ))}
             </select>
           </div>

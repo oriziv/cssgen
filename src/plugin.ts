@@ -5,6 +5,7 @@ import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles, NAME_FORMAT } from './con
 let count = 0;
 let colorStyles = {};
 let textStyles = {};
+let effectStyles = {};
 let format: OUTPUT_FORMAT = OUTPUT_FORMAT.SCSS;
 let nameFormat: NAME_FORMAT = NAME_FORMAT.KEBAB_HYPHEN;
 let currentGeneratedCode: string = '';
@@ -83,6 +84,18 @@ function generateCode(message: IMessageFormat) {
       value += `}\n`;
       generatedCode += value;
     }
+
+    for (const key in effectStyles) {
+      const element = effectStyles[key];
+      const mixinName = Utilities.formatVariable(key, nameFormat).replace(/^\$|\@/g, '');
+      let value: string = `${Utilities.getMixinPrefix(format, mixinName, nameFormat, 'effect')} {\n`;
+      for (const cssRule in element) {
+        const cssValue = element[cssRule];
+        value += `\t${cssRule}:${cssValue};\n`;
+      }
+      value += `}\n`;
+      generatedCode += value;
+    }
     figma.ui.postMessage({ code: generatedCode, count: count });
     currentGeneratedCode = generatedCode;
   }, 10);
@@ -106,6 +119,27 @@ function getLocalStyles() {
     count++;
   });
 
+  const localEffectStyles = figma.getLocalEffectStyles();
+  localEffectStyles.forEach((style: EffectStyle) => {
+    console.log(style);
+    let textValues = {};
+    if (!style.effects || !style.effects.length || !style.effects[0]['color']) {
+      return;
+    }
+    if (style.effects[0].type === 'DROP_SHADOW') {
+      const effect: ShadowEffect = style.effects[0] as ShadowEffect;
+      const color = effect.color;
+      const opacity = effect.color.a;
+      const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1);
+      // Count styles
+      textValues[
+        'box-shadow'
+      ] = `${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px${effect.spread?' '+effect.spread+'px':''} ${val}`;
+      effectStyles[style.name] = textValues;
+    }
+    count++;
+  });
+
   const tStyles = figma.getLocalTextStyles();
   tStyles.forEach((style: TextStyle) => {
     let textValues = {};
@@ -115,7 +149,7 @@ function getLocalStyles() {
     if (style.fontName && style.fontName.style) {
       textValues['font-family'] = `"${style.fontName.family}"`;
       const fontStyle = style.fontName.style;
-      if(FigmaTextStyles[fontStyle]) {
+      if (FigmaTextStyles[fontStyle]) {
         textValues['font-weight'] = FigmaTextStyles[fontStyle].fontWeight;
         textValues['font-style'] = FigmaTextStyles[fontStyle].fontStyle;
       }
