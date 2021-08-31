@@ -82,3 +82,9 @@ export const FigmaTextStyles = {
     fontWeight: 900
   }
 }
+
+export const FigmaTextDecorationStyles = {
+  "STRIKETHROUGH": 'line-through',
+  "NONE": 'none',
+  "UNDERLINE": 'underline'
+}

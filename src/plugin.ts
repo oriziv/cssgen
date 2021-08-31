@@ -1,6 +1,6 @@
 import { Utilities } from './utilities';
 import { IMessageFormat } from './interfaces';
-import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles, NAME_FORMAT, COLOR_MODE } from './constants';
+import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles, NAME_FORMAT, COLOR_MODE, FigmaTextDecorationStyles } from './constants';
 
 let count = 0;
 let colorStyles = {};
@@ -170,9 +170,14 @@ function getLocalStyles() {
       }
     }
 
-    if (style.letterSpacing && style.letterSpacing['value']) {
-      let letterSpacingtVal = style.letterSpacing['value'].toFixed(2);
+    if (style.letterSpacing && style.letterSpacing.value) {
+      let letterSpacingtVal = style.letterSpacing.value.toFixed(2);
       textValues['letter-spacing'] = letterSpacingtVal + 'px';
+    }
+
+    if (style.textDecoration) {
+      let textDecorationVal = FigmaTextDecorationStyles[style.textDecoration];
+      textValues['text-decoration'] = textDecorationVal;
     }
 
     textStyles[style.name] = textValues;
