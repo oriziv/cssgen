@@ -19,6 +19,15 @@ export enum COMMAND_TYPE {
   CLEAN = 'CLEAN'
 }
 
+export enum COLOR_MODE {
+  RGBA = 'RGBA',
+  RGB = 'RGB',
+  HEX = 'HEX',
+  HSL = 'HSL',
+  HSLA = 'HSLA',
+  HEXA = 'HEXA'
+}
+
 export const FigmaTextStyles = {
   "Thin": {
     fontStyle: 'normal',
@@ -37,6 +46,10 @@ export const FigmaTextStyles = {
     fontWeight: 'bold'
   },
   "Bold": {
+    fontStyle: 'normal',
+    fontWeight: 'bolder'
+  },
+  "SemiBold": {
     fontStyle: 'normal',
     fontWeight: 'bolder'
   },

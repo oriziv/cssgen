@@ -7,7 +7,7 @@ import 'prismjs/components/prism-stylus';
 import 'file-saver/dist/FileSaver.js';
 
 import { IMessageFormat } from './interfaces';
-import { COMMAND_TYPE, NAME_FORMAT, OUTPUT_FORMAT } from './constants';
+import { COLOR_MODE, COMMAND_TYPE, NAME_FORMAT, OUTPUT_FORMAT } from './constants';
 
 /**
  * CSS imports (global)
@@ -24,6 +24,7 @@ type OwnProps = {};
 type State = {
   outputFormat: OUTPUT_FORMAT;
   nameFormat: NAME_FORMAT;
+  colorMode: COLOR_MODE;
 };
 
 class UI extends React.Component<OwnProps, State> {
@@ -34,7 +35,8 @@ class UI extends React.Component<OwnProps, State> {
     super(props);
     this.state = {
       nameFormat: NAME_FORMAT.KEBAB_HYPHEN,
-      outputFormat: OUTPUT_FORMAT.SCSS
+      outputFormat: OUTPUT_FORMAT.SCSS,
+      colorMode: COLOR_MODE.RGBA
     };
     this.textareaRef = React.createRef();
     this.codeRef = React.createRef();
@@ -72,18 +74,34 @@ class UI extends React.Component<OwnProps, State> {
               ))}
             </select>
           </div>
+          <div className={styles.inputWrapper}>
+            <div className={styles.label}>Color Mode</div>
+
+            <select
+              id="colorMode"
+              className={styles.select}
+              value={this.state.colorMode}
+              onChange={event => {
+                this.setState({ colorMode: event.target.value as COLOR_MODE });
+              }}
+            >
+              {Object['values'](COLOR_MODE).map(format => (
+                <option key={format} value={format}>{format}</option>
+              ))}
+            </select>
+          </div>
 
           <div className={styles.inputWrapper}>
             <div className={styles.label}>Name format</div>
 
             <select
-            className={styles.select}
-            name="nameFormat" id="nameFormat"
-            onChange={event => {
-              this.setState({ nameFormat: event.target.value as NAME_FORMAT });
-            }}
+              className={styles.select}
+              name="nameFormat" id="nameFormat"
+              onChange={event => {
+                this.setState({ nameFormat: event.target.value as NAME_FORMAT });
+              }}
             >
-            {Object['values'](NAME_FORMAT).map(format => (
+              {Object['values'](NAME_FORMAT).map(format => (
                 <option key={format} value={format}>{format}</option>
               ))}
             </select>
@@ -160,13 +178,19 @@ class UI extends React.Component<OwnProps, State> {
   generate = () => {
     this.postMessage({
       nameFormat: this.state.nameFormat,
+      colorMode: this.state.colorMode,
       command: COMMAND_TYPE.GENERATE_CODE,
       format: this.state.outputFormat
     });
   };
 
   copy = () => {
-    this.postMessage({ command: COMMAND_TYPE.COPY, format: this.state.outputFormat, nameFormat: this.state.nameFormat });
+    this.postMessage({ 
+      command: COMMAND_TYPE.COPY,
+      colorMode: this.state.colorMode, 
+      format: this.state.outputFormat, 
+      nameFormat: this.state.nameFormat
+     });
     if (!this.codeRef) {
       return;
     }
@@ -177,6 +201,7 @@ class UI extends React.Component<OwnProps, State> {
   download = () => {
     this.postMessage({
       command: COMMAND_TYPE.DOWNLOAD,
+      colorMode: this.state.colorMode,
       format: this.state.outputFormat,
       nameFormat: this.state.nameFormat
     });

@@ -1,12 +1,13 @@
 import { Utilities } from './utilities';
 import { IMessageFormat } from './interfaces';
-import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles, NAME_FORMAT } from './constants';
+import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles, NAME_FORMAT, COLOR_MODE } from './constants';
 
 let count = 0;
 let colorStyles = {};
 let textStyles = {};
 let effectStyles = {};
 let format: OUTPUT_FORMAT = OUTPUT_FORMAT.SCSS;
+let colorMode: COLOR_MODE = COLOR_MODE.RGBA;
 let nameFormat: NAME_FORMAT = NAME_FORMAT.KEBAB_HYPHEN;
 let currentGeneratedCode: string = '';
 
@@ -48,6 +49,10 @@ function generateCode(message: IMessageFormat) {
 
   if (message.nameFormat) {
     nameFormat = message.nameFormat;
+  }
+
+  if (message.colorMode) {
+    colorMode = message.colorMode;
   }
 
   // Release the ui thread to paint and exec traverse.
@@ -112,7 +117,7 @@ function getLocalStyles() {
     }
     const color = style.paints[0]['color'];
     const opacity = style.paints[0].opacity;
-    const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1);
+    const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1, colorMode);
 
     // Count styles
     colorStyles[style.name] = val;
@@ -129,7 +134,7 @@ function getLocalStyles() {
       const effect: ShadowEffect = style.effects[0] as ShadowEffect;
       const color = effect.color;
       const opacity = effect.color.a;
-      const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1);
+      const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1, colorMode);
       // Count styles
       textValues['box-shadow'] = `${effect.offset.x.toFixed(2)}px ${effect.offset.y.toFixed(
         2
@@ -156,8 +161,20 @@ function getLocalStyles() {
 
     // TODO by UNIT
     if (style.lineHeight && style.lineHeight['value']) {
-      textValues['line-height'] = style.lineHeight['value'] + 'px';
+      console.log(style);
+      let lineHeightVal = style.lineHeight['value'].toFixed(2);
+      if (style.lineHeight.unit === 'PERCENT') {
+        textValues['line-height'] = lineHeightVal + '%';
+      } else {
+        textValues['line-height'] = lineHeightVal;
+      }
     }
+
+    if (style.letterSpacing && style.letterSpacing['value']) {
+      let letterSpacingtVal = style.letterSpacing['value'].toFixed(2);
+      textValues['letter-spacing'] = letterSpacingtVal + 'px';
+    }
+
     textStyles[style.name] = textValues;
     count++;
   });
@@ -188,7 +205,7 @@ function traverse(node: BaseNode) {
           // Prepare style
           const color = style['paints'][0].color;
           const opacity = style['paints'][0].opacity;
-          const val = Utilities.getColorValue(color, opacity);
+          const val = Utilities.getColorValue(color, opacity, colorMode);
 
           // Count styles
           colorStyles[key] = val;
@@ -211,7 +228,7 @@ function traverse(node: BaseNode) {
           // Prepare style
           const color = style['paints'][0].color;
           const opacity = style['paints'][0].opacity;
-          const val = Utilities.getColorValue(color, opacity);
+          const val = Utilities.getColorValue(color, opacity, colorMode);
 
           // Count styles
           colorStyles[key] = val;
