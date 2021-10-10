@@ -162,17 +162,21 @@ function getLocalStyles() {
     // TODO by UNIT
     if (style.lineHeight && style.lineHeight['value']) {
       console.log(style);
-      let lineHeightVal = style.lineHeight['value'].toFixed(2);
+      let lineHeightVal = parseFloat(style.lineHeight['value'].toFixed(2));
       if (style.lineHeight.unit === 'PERCENT') {
         textValues['line-height'] = lineHeightVal + '%';
       } else {
-        textValues['line-height'] = lineHeightVal;
+        textValues['line-height'] = lineHeightVal + 'px';
       }
     }
 
     if (style.letterSpacing && style.letterSpacing.value) {
-      let letterSpacingtVal = style.letterSpacing.value.toFixed(2);
-      textValues['letter-spacing'] = letterSpacingtVal + 'px';
+      let letterSpacingtVal = parseFloat(style.letterSpacing.value.toFixed(2));
+      if(style.letterSpacing.unit === 'PERCENT') {
+        textValues['letter-spacing'] = letterSpacingtVal/100 + 'em';
+      } else {
+        textValues['letter-spacing'] = letterSpacingtVal + 'px';
+      }
     }
 
     if (style.textDecoration) {
