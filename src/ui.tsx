@@ -7,7 +7,7 @@ import 'prismjs/components/prism-stylus';
 import 'file-saver/dist/FileSaver.js';
 
 import { IMessageFormat } from './interfaces';
-import { COLOR_MODE, COMMAND_TYPE, NAME_FORMAT, OUTPUT_FORMAT } from './constants';
+import { COLOR_MODE, COMMAND_TYPE, NAME_FORMAT, OUTPUT_FORMAT, ROOT_FONT_SIZE } from './constants';
 
 /**
  * CSS imports (global)
@@ -25,6 +25,8 @@ type State = {
   outputFormat: OUTPUT_FORMAT;
   nameFormat: NAME_FORMAT;
   colorMode: COLOR_MODE;
+  rootFontSize: ROOT_FONT_SIZE;
+  useRem: boolean;
 };
 
 class UI extends React.Component<OwnProps, State> {
@@ -36,7 +38,9 @@ class UI extends React.Component<OwnProps, State> {
     this.state = {
       nameFormat: NAME_FORMAT.KEBAB_HYPHEN,
       outputFormat: OUTPUT_FORMAT.SCSS,
-      colorMode: COLOR_MODE.RGBA
+      colorMode: COLOR_MODE.RGBA,
+      rootFontSize: ROOT_FONT_SIZE.PX16,
+      useRem: false
     };
     this.textareaRef = React.createRef();
     this.codeRef = React.createRef();
@@ -75,7 +79,7 @@ class UI extends React.Component<OwnProps, State> {
             </select>
           </div>
           <div className={styles.inputWrapper}>
-            <div className={styles.label}>Color Mode</div>
+            <div className={styles.label}>Color mode</div>
 
             <select
               id="colorMode"
@@ -106,6 +110,30 @@ class UI extends React.Component<OwnProps, State> {
               ))}
             </select>
           </div>
+          <div className={styles.inputWrapper}>
+            <div className={styles.label}>Root font size</div>
+
+            <select
+              id="rootFontSize"
+              className={styles.select}
+              value={this.state.rootFontSize}
+              onChange={event => {
+                this.setState({ rootFontSize: event.target.value as ROOT_FONT_SIZE });
+              }}
+            >
+              {Object['values'](ROOT_FONT_SIZE).map(format => (
+                <option key={format} value={format}>{`${format}px`}</option>
+              ))}
+            </select>
+          </div> 
+          <div className={styles.inputWrapper}>
+            <div className={styles.label} title="Generate rem value based on the root font size for font-size property">Use rem</div>
+            
+            <input type="checkbox"  className={styles.autoWidth} id="useRem" defaultChecked={this.state.useRem} onChange={event => {
+                this.setState({ useRem: !this.state.useRem });
+              }}/>
+
+          </div>          
         </div>
 
         <div className={styles.output}>
@@ -130,14 +158,14 @@ class UI extends React.Component<OwnProps, State> {
 
           <div className={styles.toolbarBottomButtons}>
             <button
-              disabled={disableButtons}
+              // disabled={disableButtons}
               className={`${styles.button} ${styles.buttonSecondary}`}
               onClick={this.download}
             >
               Download
             </button>
             <button
-              disabled={disableButtons}
+              // disabled={disableButtons}
               className={`${styles.button} ${styles.buttonSecondary}`}
               onClick={this.copy}
             >
@@ -180,7 +208,9 @@ class UI extends React.Component<OwnProps, State> {
       nameFormat: this.state.nameFormat,
       colorMode: this.state.colorMode,
       command: COMMAND_TYPE.GENERATE_CODE,
-      format: this.state.outputFormat
+      format: this.state.outputFormat,
+      useRem: this.state.useRem,
+      rootFontSize: this.state.rootFontSize
     });
   };
 

@@ -88,3 +88,17 @@ export const FigmaTextDecorationStyles = {
   "NONE": 'none',
   "UNDERLINE": 'underline'
 }
+
+export enum ROOT_FONT_SIZE {
+  PX='10',
+  PX11='11',
+  PX12='12',
+  PX13='13',
+  PX14='14',
+  PX15='15',
+  PX16='16',
+  PX17='17',
+  PX18='18',
+  PX19='19',
+  PX20='20'
+}

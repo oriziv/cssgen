@@ -1,11 +1,13 @@
-import { Utilities } from './utilities';
+import { formatNumericValue, Utilities } from './utilities';
 import { IMessageFormat } from './interfaces';
-import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles, NAME_FORMAT, COLOR_MODE, FigmaTextDecorationStyles } from './constants';
+import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles, NAME_FORMAT, COLOR_MODE, FigmaTextDecorationStyles, ROOT_FONT_SIZE } from './constants';
 
 let count = 0;
 let colorStyles = {};
 let textStyles = {};
 let effectStyles = {};
+let useRem = false; 
+let rootFontSize: ROOT_FONT_SIZE = ROOT_FONT_SIZE.PX16;
 let format: OUTPUT_FORMAT = OUTPUT_FORMAT.SCSS;
 let colorMode: COLOR_MODE = COLOR_MODE.RGBA;
 let nameFormat: NAME_FORMAT = NAME_FORMAT.KEBAB_HYPHEN;
@@ -18,7 +20,7 @@ figma.showUI(__html__, {
 });
 
 // Define listener to message from the ui and choose what to do based on the command type
-figma.ui.onmessage = message => {
+figma.ui.onmessage = (message: IMessageFormat) => {
   switch (message.command) {
     case COMMAND_TYPE.DOWNLOAD:
       download(message);
@@ -55,6 +57,14 @@ function generateCode(message: IMessageFormat) {
     colorMode = message.colorMode;
   }
 
+  if (message.rootFontSize) {
+    rootFontSize = message.rootFontSize;
+  }
+
+  if (message.useRem !== undefined) {
+    useRem = message.useRem;
+  }
+  
   // Release the ui thread to paint and exec traverse.
   setTimeout(() => {
     if (typeof figma.getLocalPaintStyles === 'function') {
@@ -130,15 +140,14 @@ function getLocalStyles() {
     if (!style.effects || !style.effects.length || !style.effects[0]['color']) {
       return;
     }
-    if (style.effects[0].type === 'DROP_SHADOW') {
+    if (style.effects[0].type === 'DROP_SHADOW' || style.effects[0].type === 'INNER_SHADOW') {
+      console.log(style.effects);
       const effect: ShadowEffect = style.effects[0] as ShadowEffect;
       const color = effect.color;
       const opacity = effect.color.a;
       const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1, colorMode);
       // Count styles
-      textValues['box-shadow'] = `${effect.offset.x.toFixed(2)}px ${effect.offset.y.toFixed(
-        2
-      )}px ${effect.radius.toFixed(2)}px${effect.spread ? ' ' + effect.spread.toFixed(2) + 'px' : ''} ${val}`;
+      textValues['box-shadow'] = `${style.effects[0].type === 'INNER_SHADOW'?'inset ':''}${formatNumericValue(effect.offset.x, 'px',2)} ${formatNumericValue(effect.offset.y, 'px',2)} ${formatNumericValue(effect.radius,'px',2)}${effect.spread ? ' ' + formatNumericValue(effect.spread, 'px', 2) : ''} ${val}`;
       effectStyles[style.name] = textValues;
     }
     count++;
@@ -148,7 +157,11 @@ function getLocalStyles() {
   tStyles.forEach((style: TextStyle) => {
     let textValues = {};
     if (style.fontSize) {
-      textValues['font-size'] = `${style.fontSize}px`;
+      if(useRem) {
+        textValues['font-size'] = formatNumericValue(style.fontSize/parseInt(rootFontSize), 'rem');
+      } else {
+        textValues['font-size'] = `${style.fontSize}px`;
+      }
     }
     if (style.fontName && style.fontName.style) {
       textValues['font-family'] = `"${style.fontName.family}"`;

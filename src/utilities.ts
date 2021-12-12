@@ -159,3 +159,8 @@ export namespace Utilities {
     return "hsl(" + h + "," + s + "%," + l + "%)";
   }
 }
+
+
+export function formatNumericValue(value: number, unit, precision=3): string {
+  return Number(Number(value).toFixed(precision)).toString() + unit;
+}
