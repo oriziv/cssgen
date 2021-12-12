@@ -141,7 +141,6 @@ function getLocalStyles() {
       return;
     }
     if (style.effects[0].type === 'DROP_SHADOW' || style.effects[0].type === 'INNER_SHADOW') {
-      console.log(style.effects);
       const effect: ShadowEffect = style.effects[0] as ShadowEffect;
       const color = effect.color;
       const opacity = effect.color.a;
@@ -174,7 +173,6 @@ function getLocalStyles() {
 
     // TODO by UNIT
     if (style.lineHeight && style.lineHeight['value']) {
-      console.log(style);
       let lineHeightVal = parseFloat(style.lineHeight['value'].toFixed(2));
       if (style.lineHeight.unit === 'PERCENT') {
         textValues['line-height'] = lineHeightVal + '%';
