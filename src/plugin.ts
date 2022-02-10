@@ -7,6 +7,7 @@ let colorStyles = {};
 let textStyles = {};
 let effectStyles = {};
 let useRem = false; 
+let usePrefix = true; 
 let rootFontSize: ROOT_FONT_SIZE = ROOT_FONT_SIZE.PX16;
 let format: OUTPUT_FORMAT = OUTPUT_FORMAT.SCSS;
 let colorMode: COLOR_MODE = COLOR_MODE.RGBA;
@@ -64,6 +65,10 @@ function generateCode(message: IMessageFormat) {
   if (message.useRem !== undefined) {
     useRem = message.useRem;
   }
+
+  if (message.usePrefix !== undefined) {
+    usePrefix = message.usePrefix;
+  }
   
   // Release the ui thread to paint and exec traverse.
   setTimeout(() => {
@@ -78,8 +83,9 @@ function generateCode(message: IMessageFormat) {
 
     for (const key in colorStyles) {
       const val = colorStyles[key];
+      const colorPrefix = usePrefix ? '' : 'color-';
       const preprocessorVariable = `${Utilities.getVariablePrefix(format)}${Utilities.formatVariable(
-        `color-${key}`,
+        `${colorPrefix}${key}`,
         nameFormat
       )}: ${val};\n`;
       generatedCode += preprocessorVariable;
@@ -91,7 +97,7 @@ function generateCode(message: IMessageFormat) {
     for (const key in textStyles) {
       const element = textStyles[key];
       const mixinName = Utilities.formatVariable(key, nameFormat).replace(/^\$|\@/g, '');
-      let value: string = `${Utilities.getMixinPrefix(format, mixinName, nameFormat)} {\n`;
+      let value: string = `${Utilities.getMixinPrefix(format, mixinName, nameFormat,'text',usePrefix)} {\n`;
       for (const cssRule in element) {
         const cssValue = element[cssRule];
         value += `\t${cssRule}:${cssValue};\n`;
@@ -103,7 +109,7 @@ function generateCode(message: IMessageFormat) {
     for (const key in effectStyles) {
       const element = effectStyles[key];
       const mixinName = Utilities.formatVariable(key, nameFormat).replace(/^\$|\@/g, '');
-      let value: string = `${Utilities.getMixinPrefix(format, mixinName, nameFormat, 'effect')} {\n`;
+      let value: string = `${Utilities.getMixinPrefix(format, mixinName, nameFormat, 'effect', usePrefix)} {\n`;
       for (const cssRule in element) {
         const cssValue = element[cssRule];
         value += `\t${cssRule}:${cssValue};\n`;

@@ -17,6 +17,7 @@ export interface IMessageFormat extends Partial<MessageEvent> {
   format: OUTPUT_FORMAT;
   rootFontSize?: ROOT_FONT_SIZE;
   useRem?: boolean;
+  usePrefix?: boolean;
   colorMode: COLOR_MODE;
   command: COMMAND_TYPE;
   nameFormat: NAME_FORMAT;

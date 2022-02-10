@@ -27,6 +27,7 @@ type State = {
   colorMode: COLOR_MODE;
   rootFontSize: ROOT_FONT_SIZE;
   useRem: boolean;
+  usePrefix: boolean;
 };
 
 class UI extends React.Component<OwnProps, State> {
@@ -40,7 +41,8 @@ class UI extends React.Component<OwnProps, State> {
       outputFormat: OUTPUT_FORMAT.SCSS,
       colorMode: COLOR_MODE.RGBA,
       rootFontSize: ROOT_FONT_SIZE.PX16,
-      useRem: false
+      useRem: false,
+      usePrefix: true
     };
     this.textareaRef = React.createRef();
     this.codeRef = React.createRef();
@@ -134,6 +136,14 @@ class UI extends React.Component<OwnProps, State> {
               }}/>
 
           </div>          
+          <div className={styles.inputWrapper}>
+            <div className={styles.label} title="Add variables and mixin prefix. for example --color">Add prefix</div>
+            
+            <input type="checkbox"  className={styles.autoWidth} id="usePrefix" defaultChecked={this.state.usePrefix} onChange={event => {
+                this.setState({ useRem: !this.state.usePrefix });
+              }}/>
+
+          </div>          
         </div>
 
         <div className={styles.output}>
@@ -210,7 +220,8 @@ class UI extends React.Component<OwnProps, State> {
       command: COMMAND_TYPE.GENERATE_CODE,
       format: this.state.outputFormat,
       useRem: this.state.useRem,
-      rootFontSize: this.state.rootFontSize
+      rootFontSize: this.state.rootFontSize,
+      usePrefix: this.state.usePrefix
     });
   };
 
@@ -219,7 +230,9 @@ class UI extends React.Component<OwnProps, State> {
       command: COMMAND_TYPE.COPY,
       colorMode: this.state.colorMode, 
       format: this.state.outputFormat, 
-      nameFormat: this.state.nameFormat
+      nameFormat: this.state.nameFormat,
+      usePrefix: this.state.usePrefix,
+      useRem: this.state.useRem
      });
     if (!this.codeRef) {
       return;
@@ -233,7 +246,9 @@ class UI extends React.Component<OwnProps, State> {
       command: COMMAND_TYPE.DOWNLOAD,
       colorMode: this.state.colorMode,
       format: this.state.outputFormat,
-      nameFormat: this.state.nameFormat
+      nameFormat: this.state.nameFormat,
+      usePrefix: this.state.usePrefix,
+      useRem: this.state.useRem
     });
 
     if (!(this.textareaRef && this.textareaRef.current)) {
