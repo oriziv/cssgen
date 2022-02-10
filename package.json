@@ -44,7 +44,7 @@
     "cz-conventional-changelog": "^3.0.2",
     "html-webpack-inline-source-plugin": "0.0.10",
     "html-webpack-plugin": "^3.2.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "prettier": "^1.18.2",
     "sass-loader": "^7.2.0",
     "standard-version": "git+https://github.com/conventional-changelog/standard-version.git#feat-bump-files",
