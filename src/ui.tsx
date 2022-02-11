@@ -140,7 +140,7 @@ class UI extends React.Component<OwnProps, State> {
             <div className={styles.label} title="Add variables and mixin prefix. for example --color">Add prefix</div>
             
             <input type="checkbox"  className={styles.autoWidth} id="usePrefix" defaultChecked={this.state.usePrefix} onChange={event => {
-                this.setState({ useRem: !this.state.usePrefix });
+                this.setState({ usePrefix: !this.state.usePrefix });
               }}/>
 
           </div>          

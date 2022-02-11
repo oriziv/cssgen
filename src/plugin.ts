@@ -83,7 +83,7 @@ function generateCode(message: IMessageFormat) {
 
     for (const key in colorStyles) {
       const val = colorStyles[key];
-      const colorPrefix = usePrefix ? '' : 'color-';
+      const colorPrefix = usePrefix ? 'color-' : '';
       const preprocessorVariable = `${Utilities.getVariablePrefix(format)}${Utilities.formatVariable(
         `${colorPrefix}${key}`,
         nameFormat
