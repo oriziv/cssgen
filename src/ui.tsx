@@ -189,6 +189,7 @@ class UI extends React.Component<OwnProps, State> {
 
   handlePluginMessage = event => {
     const data: { pluginMessage: IMessageFormat } = event.data;
+    const code = data.pluginMessage.code;
 
     if (data.pluginMessage.command === COMMAND_TYPE.CLEAN && this.codeRef && this.codeRef.current) {
       this.codeRef.current.innerHTML = '';
@@ -196,21 +197,31 @@ class UI extends React.Component<OwnProps, State> {
     }
 
     if (data.pluginMessage.count === 0 && this.codeRef && this.codeRef.current) {
-      this.codeRef.current.innerHTML = '<span>No styles were found<span>';
+      this.codeRef.current.innerHTML = '<div style="text-align:center">No local styles were found.<br>Learn <a href="https://cutt.ly/css-gen-styles" target="_blank">here</a> how to add your first styles<div>';
       return;
     }
 
-    const code = data.pluginMessage.code;
+
     if (!(this.textareaRef && this.textareaRef.current && this.codeRef && this.codeRef.current)) {
       return;
     }
-    this.textareaRef.current.value = code;
+
+    // Render generated code
     const html = Prism.highlight(
       code,
       Prism.languages[this.state.outputFormat.toLowerCase()],
       this.state.outputFormat.toLowerCase()
-    );
-    this.codeRef.current.innerHTML = html;
+      );
+      this.codeRef.current.innerHTML = html;
+      this.textareaRef.current.value = code;
+
+    // If download was requested - create a download
+    if(data.pluginMessage.command === COMMAND_TYPE.DOWNLOAD) {
+        const file = new File([code], `styles.${this.state.outputFormat.toLowerCase()}`, {
+          type: 'text/plain;charset=utf-8'
+        });
+        saveAs(file);      
+    }
   };
 
   generate = () => {
@@ -254,10 +265,10 @@ class UI extends React.Component<OwnProps, State> {
     if (!(this.textareaRef && this.textareaRef.current)) {
       return;
     }
-    const file = new File([this.textareaRef.current.value], `styles.${this.state.outputFormat.toLowerCase()}`, {
-      type: 'text/plain;charset=utf-8'
-    });
-    saveAs(file);
+    // const file = new File([this.textareaRef.current.value], `styles.${this.state.outputFormat.toLowerCase()}`, {
+    //   type: 'text/plain;charset=utf-8'
+    // });
+    // saveAs(file);
   };
 
   postMessage = (message: IMessageFormat, targetOrigin: string = '*') => {

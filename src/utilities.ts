@@ -91,6 +91,35 @@ export namespace Utilities {
     return res;
   }
 
+  export function getGradientValue(paint: GradientPaint, opacity, colorMode = COLOR_MODE.RGBA): string {
+    let res = '';
+    // Go over all gradient stops
+    if(paint.type === 'GRADIENT_LINEAR') {
+      res += 'linear-gradient(to bottom, ';
+    }
+    if(paint.type === 'GRADIENT_RADIAL') {
+      res += 'radial-gradient(';
+    }
+    if(paint.type === 'GRADIENT_ANGULAR') {
+      res += 'conic-gradient(';
+    }
+
+    if(paint.type === 'GRADIENT_DIAMOND') {
+      res += 'radial-gradient(50% 50% at 50% 50%, ';
+    }
+    
+    paint.gradientStops.forEach((stop, i) => {
+      res+= getColorValue(stop.color, stop.color.r, colorMode);
+      res+= ` ${Number((stop.position*100).toFixed(2))}%`;
+      if(i < paint.gradientStops.length-1){
+        res+=',';
+      }
+    });
+
+    res+=')';
+    return res;
+  }
+
   export function RGBAToHexA(r, g, b, a?) {
     r = r.toString(16);
     g = g.toString(16);

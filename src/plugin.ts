@@ -24,7 +24,7 @@ figma.showUI(__html__, {
 figma.ui.onmessage = (message: IMessageFormat) => {
   switch (message.command) {
     case COMMAND_TYPE.DOWNLOAD:
-      download(message);
+      generateCode(message, COMMAND_TYPE.DOWNLOAD);
       break;
     case COMMAND_TYPE.GENERATE_CODE:
       generateCode(message);
@@ -42,9 +42,13 @@ function download(message: IMessageFormat) {
 
 // Iterate over the figma tree and fetch the styles.
 // Current support is text styles and color styles
-function generateCode(message: IMessageFormat) {
+function generateCode(message: IMessageFormat, command = COMMAND_TYPE.GENERATE_CODE) {
   figma.ui.postMessage({ command: COMMAND_TYPE.CLEAN });
+  currentGeneratedCode = '';
   let generatedCode = '';
+  colorStyles = {};
+  effectStyles = {};
+  textStyles = {};
 
   if (message.format) {
     format = message.format;
@@ -117,9 +121,9 @@ function generateCode(message: IMessageFormat) {
       value += `}\n`;
       generatedCode += value;
     }
-    figma.ui.postMessage({ code: generatedCode, count: count });
+    figma.ui.postMessage({ code: generatedCode, count: count, command: command });
     currentGeneratedCode = generatedCode;
-  }, 10);
+  });
 }
 
 // This plugin counts the number of layers, ignoring instance sublayers,
@@ -127,17 +131,31 @@ function generateCode(message: IMessageFormat) {
 function getLocalStyles() {
   const paintStyles = figma.getLocalPaintStyles();
   paintStyles.forEach((style: PaintStyle) => {
-    // Prepare style
-    if (!style.paints || !style.paints.length || !style.paints[0]['color']) {
+    // Prepare style - currently supports only solid color
+    if (!style.paints || !style.paints.length) {
       return;
     }
-    const color = style.paints[0]['color'];
-    const opacity = style.paints[0].opacity;
-    const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1, colorMode);
+    
+    const visiblePaints = style.paints.filter(p => p.visible).reverse();
+    const type = visiblePaints[0].type;
+    if(type === 'SOLID') {
+      const paint = visiblePaints[0] as SolidPaint;
+      const color = paint.color;
+      const opacity = paint.opacity;
+      const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1, colorMode);
+      colorStyles[style.name] = val;
+      count++;
+    };
+
+    if(type === 'GRADIENT_LINEAR' || type === 'GRADIENT_RADIAL' || type === 'GRADIENT_ANGULAR') {
+      const paint = visiblePaints[0] as GradientPaint;
+      const val = Utilities.getGradientValue(paint, paint.opacity, colorMode);
+      colorStyles[style.name] = val;
+      count++;
+    }
+    
 
     // Count styles
-    colorStyles[style.name] = val;
-    count++;
   });
 
   const localEffectStyles = figma.getLocalEffectStyles();
@@ -147,7 +165,7 @@ function getLocalStyles() {
       return;
     }
     if (style.effects[0].type === 'DROP_SHADOW' || style.effects[0].type === 'INNER_SHADOW') {
-      const effect: ShadowEffect = style.effects[0] as ShadowEffect;
+      const effect: InnerShadowEffect = style.effects[0] as InnerShadowEffect;
       const color = effect.color;
       const opacity = effect.color.a;
       const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1, colorMode);

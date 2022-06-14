@@ -35,27 +35,55 @@ export const FigmaTextStyles = {
   },
   "Light": {
     fontStyle: 'normal',
-    fontWeight: 'lighter'
+    fontWeight: 300
   },
   "Regular": {
     fontStyle: 'normal',
-    fontWeight: 'normal'
+    fontWeight: 400
   },
   "Medium": {
     fontStyle: 'normal',
-    fontWeight: 'bold'
+    fontWeight: 500
   },
   "Bold": {
     fontStyle: 'normal',
-    fontWeight: 'bolder'
+    fontWeight: 700
+  },
+  "ExtraBold": {
+    fontStyle: 'normal',
+    fontWeight: 800
+  },
+  "UtraBold": {
+    fontStyle: 'normal',
+    fontWeight: 800
   },
   "SemiBold": {
     fontStyle: 'normal',
-    fontWeight: 'bolder'
+    fontWeight: 600
+  },
+  "DemiBold": {
+    fontStyle: 'normal',
+    fontWeight: 600
+  },
+  "Demi": {
+    fontStyle: 'normal',
+    fontWeight: 600
   },
   "Black": {
     fontStyle: 'normal',
     fontWeight: 900
+  },
+  "Heavy": {
+    fontStyle: 'normal',
+    fontWeight: 900
+  },
+  "UltraBlack": {
+    fontStyle: 'normal',
+    fontWeight: 950
+  },
+  "ExtraBlack": {
+    fontStyle: 'normal',
+    fontWeight: 950
   },
   "Thin Italic": {
     fontStyle: 'italic',
@@ -63,19 +91,19 @@ export const FigmaTextStyles = {
   },
   "Light Italic": {
     fontStyle: 'italic',
-    fontWeight: 'lighter'
+    fontWeight: 300
   },
   "Italic": {
     fontStyle: 'italic',
-    fontWeight: 'normal'
+    fontWeight: 400
   },
   "Medium Italic": {
     fontStyle: 'italic',
-    fontWeight: 'bold'
+    fontWeight: 500
   },
   "Bold Italic": {
     fontStyle: 'italic',
-    fontWeight: 'bolder'
+    fontWeight: 700
   },
   "Black Italic": {
     fontStyle: 'italic',
@@ -101,4 +129,9 @@ export enum ROOT_FONT_SIZE {
   PX18='18',
   PX19='19',
   PX20='20'
+}
+
+
+export enum GRADIENT_TYPES {
+  GRADIENT_LINEAR=''
 }
