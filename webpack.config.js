@@ -4,7 +4,6 @@ const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-/** @type {() => import('./node_modules/webpack/declarations/WebpackOptions').WebpackOptions} */
 module.exports = (env, argv) => ({
   mode: argv.mode === 'production' ? 'production' : 'development',
 
@@ -24,16 +23,17 @@ module.exports = (env, argv) => ({
       // Enables including CSS by doing "import './file.css'" in your TypeScript code
       {
         test: /\.(scss)$/,
-        loader: [
+        use: [
           { loader: 'style-loader' },
           {
             loader: 'css-loader',
-            query: {
+            options: {
               modules: {
-                localIdentName: '[name][local]'
+                localIdentName: '[name][local]',
+                exportLocalsConvention: 'camelCase'
               },
-              localsConvention: 'camelCase',
-              sourceMap: true
+              // localsConvention: 'camelCase',
+              sourceMap: argv.mode !== 'production'
             }
           },
           { loader: 'sass-loader' }
@@ -41,20 +41,20 @@ module.exports = (env, argv) => ({
       },
       {
         test: /\.(css)$/,
-        loader: [
+        use: [
           { loader: 'style-loader' },
           {
             loader: 'css-loader',
-            query: {
+            options: {
               modules: false,
-              sourceMap: true
+              sourceMap: argv.mode !== 'production'
             }
           }
         ]
       },
 
       // Allows you to use "<%= require('./file.svg') %>" in your HTML code to get a data URI
-      { test: /\.(png|jpg|gif|webp|svg)$/, loader: [{ loader: 'url-loader' }] }
+      { test: /\.(png|jpg|gif|webp|svg)$/, use: [{ loader: 'url-loader' }] }
     ]
   },
 
@@ -62,6 +62,7 @@ module.exports = (env, argv) => ({
   resolve: { extensions: ['.tsx', '.ts', '.jsx', '.js'] },
 
   output: {
+    publicPath: '/',
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist') // Compile into a folder called "dist"
   },
@@ -80,6 +81,7 @@ module.exports = (env, argv) => ({
       inlineSource: '.(js)$',
       chunks: ['ui']
     }),
-    new HtmlWebpackInlineSourcePlugin()
+    // @ts-ignore
+    new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
   ]
 });

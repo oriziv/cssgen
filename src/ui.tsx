@@ -220,7 +220,7 @@ class UI extends React.Component<OwnProps, State> {
         const file = new File([code], `styles.${this.state.outputFormat.toLowerCase()}`, {
           type: 'text/plain;charset=utf-8'
         });
-        saveAs(file);      
+        window.saveAs(file);
     }
   };
 
@@ -295,4 +295,5 @@ class UI extends React.Component<OwnProps, State> {
   };
 }
 
-ReactDOM.render(<UI />, document.getElementById('react'));
+const domEl = document.getElementById('react');
+ReactDOM.render(<UI />, domEl);
