@@ -1,4 +1,3 @@
-import { COLOR_MODE } from "./constants";
 import { IMessageFormat, IOutputStyle } from "./interfaces";
 import { formatNumericValue, Utilities } from "./utilities";
 

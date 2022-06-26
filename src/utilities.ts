@@ -1,7 +1,6 @@
 import kebabCase from 'lodash-es/kebabCase';
 import camelCase from 'lodash-es/camelCase';
 import snakeCase from 'lodash-es/snakeCase';
-import capitalize from 'lodash-es/capitalize';
 
 import { COLOR_MODE, NAME_FORMAT, OUTPUT_FORMAT } from './constants';
 

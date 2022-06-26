@@ -1,4 +1,4 @@
-import { FigmaTextDecorationStyles, FigmaTextStyles, NAME_FORMAT, OUTPUT_FORMAT, ROOT_FONT_SIZE } from "./constants";
+import { FigmaTextCaseStyles, FigmaTextDecorationStyles, FigmaTextStyles, ROOT_FONT_SIZE } from "./constants";
 import { IMessageFormat, IOutputStyle } from "./interfaces";
 import { formatNumericValue, Utilities } from "./utilities";
 
@@ -22,6 +22,9 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
             if (FigmaTextStyles[fontStyle]) {
                 textValues['font-weight'] = FigmaTextStyles[fontStyle].fontWeight;
                 textValues['font-style'] = FigmaTextStyles[fontStyle].fontStyle;
+                if(fontStyle.toLowerCase().indexOf('italic')!==-1) {
+                    textValues['font-style'] = 'italic';
+                }
             }
         }
 
@@ -48,8 +51,17 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
             let textDecorationVal = FigmaTextDecorationStyles[style.textDecoration];
             textValues['text-decoration'] = textDecorationVal;
         }
+
+        if(style.textCase) {
+            let textCaseVal = FigmaTextCaseStyles[style.textCase];
+            textValues['text-transform'] = textCaseVal;
+        }
         if (style.description) {
             styleOutput.description = style.description;
+        }
+        if(style.paragraphIndent) {
+            let textIndentVal = parseFloat(style.paragraphIndent.toFixed(2));
+            textValues['text-indent'] = textIndentVal + 'px';
         }
         styleOutput.styles[style.name] = textValues;
         output.push(styleOutput);

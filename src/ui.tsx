@@ -131,7 +131,7 @@ class UI extends React.Component<OwnProps, State> {
             </select>
           </div> 
           <div className={styles.inputWrapper}>
-            <div className={styles.label} title="Generate rem value based on the root font size for font-size property">Use rem</div>
+            <div className={styles.label} title="Generate rem value based on the root font size for font-size property">Use rem font size</div>
             
             <input type="checkbox"  className={styles.autoWidth} id="useRem" defaultChecked={this.state.useRem} onChange={event => {
                 this.setState({ useRem: !this.state.useRem });

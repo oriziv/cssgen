@@ -117,6 +117,14 @@ export const FigmaTextDecorationStyles = {
   "UNDERLINE": 'underline'
 }
 
+// https://www.w3schools.com/cssref/pr_text_text-transform.asp
+//none|capitalize|uppercase|lowercase|initial|inherit; 
+export const FigmaTextCaseStyles = {
+  'ORIGINAL': 'none',
+  'UPPER': 'uppercase',
+  'LOWER': 'lowercase',
+  'TITLE': 'capitalize'
+}
 export enum ROOT_FONT_SIZE {
   PX='10',
   PX11='11',
