@@ -28,6 +28,7 @@ type State = {
   rootFontSize: ROOT_FONT_SIZE;
   useRem: boolean;
   usePrefix: boolean;
+  addComments: boolean;
 };
 
 class UI extends React.Component<OwnProps, State> {
@@ -42,7 +43,8 @@ class UI extends React.Component<OwnProps, State> {
       colorMode: COLOR_MODE.RGBA,
       rootFontSize: ROOT_FONT_SIZE.PX16,
       useRem: false,
-      usePrefix: true
+      usePrefix: true,
+      addComments: false
     };
     this.textareaRef = React.createRef();
     this.codeRef = React.createRef();
@@ -144,6 +146,14 @@ class UI extends React.Component<OwnProps, State> {
               }}/>
 
           </div>          
+          <div className={styles.inputWrapper}>
+            <div className={styles.label} title="Add comments based on style description">Add style description</div>
+            
+            <input type="checkbox"  className={styles.autoWidth} id="addComments" defaultChecked={this.state.addComments} onChange={event => {
+                this.setState({ addComments: !this.state.addComments });
+              }}/>
+
+          </div>          
         </div>
 
         <div className={styles.output}>
@@ -232,7 +242,8 @@ class UI extends React.Component<OwnProps, State> {
       format: this.state.outputFormat,
       useRem: this.state.useRem,
       rootFontSize: this.state.rootFontSize,
-      usePrefix: this.state.usePrefix
+      usePrefix: this.state.usePrefix,
+      addComments: this.state.addComments
     });
   };
 
@@ -243,7 +254,9 @@ class UI extends React.Component<OwnProps, State> {
       format: this.state.outputFormat, 
       nameFormat: this.state.nameFormat,
       usePrefix: this.state.usePrefix,
-      useRem: this.state.useRem
+      useRem: this.state.useRem, 
+      rootFontSize: this.state.rootFontSize,
+      addComments: this.state.addComments
      });
     if (!this.codeRef) {
       return;
@@ -259,7 +272,9 @@ class UI extends React.Component<OwnProps, State> {
       format: this.state.outputFormat,
       nameFormat: this.state.nameFormat,
       usePrefix: this.state.usePrefix,
-      useRem: this.state.useRem
+      useRem: this.state.useRem,
+      rootFontSize: this.state.rootFontSize,
+      addComments: this.state.addComments
     });
 
     if (!(this.textareaRef && this.textareaRef.current)) {

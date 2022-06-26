@@ -1,23 +1,22 @@
-import { formatNumericValue, Utilities } from './utilities';
-import { IMessageFormat } from './interfaces';
-import { OUTPUT_FORMAT, COMMAND_TYPE, FigmaTextStyles, NAME_FORMAT, COLOR_MODE, FigmaTextDecorationStyles, ROOT_FONT_SIZE } from './constants';
+import { IMessageFormat, IOutputStyle } from './interfaces';
+import { COMMAND_TYPE } from './constants';
+import { formatTextStyleCode, generateTextStyles } from './textStyles';
+import { formatEffectStylesCode, generateEffectStyles } from './effectStyles';
+import { formatPaintStylesCode, generatePaintsStyles } from './paintStyles';
 
+// Init
 let count = 0;
-let colorStyles = {};
-let textStyles = {};
-let effectStyles = {};
-let useRem = false; 
-let usePrefix = true; 
-let rootFontSize: ROOT_FONT_SIZE = ROOT_FONT_SIZE.PX16;
-let format: OUTPUT_FORMAT = OUTPUT_FORMAT.SCSS;
-let colorMode: COLOR_MODE = COLOR_MODE.RGBA;
-let nameFormat: NAME_FORMAT = NAME_FORMAT.KEBAB_HYPHEN;
+let paintStyles: IOutputStyle[] = [];
+let textStyles: IOutputStyle[] = [];
+let effectStyles: IOutputStyle[] = [];
 let currentGeneratedCode: string = '';
+let pluginOptions: IMessageFormat;
 
 // Display UI
 figma.showUI(__html__, {
-  height: 616,
-  width: 500
+  height: 700,
+  width: 500,
+  themeColors: true
 });
 
 // Define listener to message from the ui and choose what to do based on the command type
@@ -34,11 +33,6 @@ figma.ui.onmessage = (message: IMessageFormat) => {
   }
 };
 
-// figma.closePlugin();
-function download(message: IMessageFormat) {
-  if (message.format) {
-  }
-}
 
 // Iterate over the figma tree and fetch the styles.
 // Current support is text styles and color styles
@@ -46,81 +40,24 @@ function generateCode(message: IMessageFormat, command = COMMAND_TYPE.GENERATE_C
   figma.ui.postMessage({ command: COMMAND_TYPE.CLEAN });
   currentGeneratedCode = '';
   let generatedCode = '';
-  colorStyles = {};
-  effectStyles = {};
-  textStyles = {};
+  paintStyles.length = 0;
+  effectStyles.length = 0;
+  textStyles.length = 0;
+  pluginOptions = message;
 
-  if (message.format) {
-    format = message.format;
-  }
-
-  if (message.nameFormat) {
-    nameFormat = message.nameFormat;
-  }
-
-  if (message.colorMode) {
-    colorMode = message.colorMode;
-  }
-
-  if (message.rootFontSize) {
-    rootFontSize = message.rootFontSize;
-  }
-
-  if (message.useRem !== undefined) {
-    useRem = message.useRem;
-  }
-
-  if (message.usePrefix !== undefined) {
-    usePrefix = message.usePrefix;
-  }
-  
   // Release the ui thread to paint and exec traverse.
   setTimeout(() => {
-    if (typeof figma.getLocalPaintStyles === 'function') {
-      getLocalStyles();
-    } else {
-      traverse(figma.root);
-    }
-    if (format === OUTPUT_FORMAT.CSS) {
-      generatedCode += `:root {\n`;
-    }
 
-    for (const key in colorStyles) {
-      const val = colorStyles[key];
-      const colorPrefix = usePrefix ? 'color-' : '';
-      const preprocessorVariable = `${Utilities.getVariablePrefix(format)}${Utilities.formatVariable(
-        `${colorPrefix}${key}`,
-        nameFormat
-      )}: ${val};\n`;
-      generatedCode += preprocessorVariable;
-    }
-    if (format === OUTPUT_FORMAT.CSS) {
-      generatedCode += `}\n`;
-    }
+    // Get all local styles by types
+    getLocalStyles();
 
-    for (const key in textStyles) {
-      const element = textStyles[key];
-      const mixinName = Utilities.formatVariable(key, nameFormat).replace(/^\$|\@/g, '');
-      let value: string = `${Utilities.getMixinPrefix(format, mixinName, nameFormat,'text',usePrefix)} {\n`;
-      for (const cssRule in element) {
-        const cssValue = element[cssRule];
-        value += `\t${cssRule}:${cssValue};\n`;
-      }
-      value += `}\n`;
-      generatedCode += value;
-    }
+    // Start generating code
+    generatedCode += formatPaintStylesCode(pluginOptions, paintStyles);
+    generatedCode += formatTextStyleCode(pluginOptions, textStyles);
+    generatedCode += formatEffectStylesCode(pluginOptions, effectStyles);
 
-    for (const key in effectStyles) {
-      const element = effectStyles[key];
-      const mixinName = Utilities.formatVariable(key, nameFormat).replace(/^\$|\@/g, '');
-      let value: string = `${Utilities.getMixinPrefix(format, mixinName, nameFormat, 'effect', usePrefix)} {\n`;
-      for (const cssRule in element) {
-        const cssValue = element[cssRule];
-        value += `\t${cssRule}:${cssValue};\n`;
-      }
-      value += `}\n`;
-      generatedCode += value;
-    }
+    // Count the styles that were generated
+    count = Object.keys(paintStyles).length + Object.keys(effectStyles).length + Object.keys(textStyles).length;
     figma.ui.postMessage({ code: generatedCode, count: count, command: command });
     currentGeneratedCode = generatedCode;
   });
@@ -129,186 +66,9 @@ function generateCode(message: IMessageFormat, command = COMMAND_TYPE.GENERATE_C
 // This plugin counts the number of layers, ignoring instance sublayers,
 // in the document
 function getLocalStyles() {
-  const paintStyles = figma.getLocalPaintStyles();
-  paintStyles.forEach((style: PaintStyle) => {
-    // Prepare style - currently supports only solid color
-    if (!style.paints || !style.paints.length) {
-      return;
-    }
-    
-    const visiblePaints = style.paints.filter(p => p.visible).reverse();
-    const type = visiblePaints[0].type;
-    if(type === 'SOLID') {
-      const paint = visiblePaints[0] as SolidPaint;
-      const color = paint.color;
-      const opacity = paint.opacity;
-      const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1, colorMode);
-      colorStyles[style.name] = val;
-      count++;
-    };
-
-    if(type === 'GRADIENT_LINEAR' || type === 'GRADIENT_RADIAL' || type === 'GRADIENT_ANGULAR') {
-      const paint = visiblePaints[0] as GradientPaint;
-      const val = Utilities.getGradientValue(paint, paint.opacity, colorMode);
-      colorStyles[style.name] = val;
-      count++;
-    }
-    
-
-    // Count styles
-  });
-
-  const localEffectStyles = figma.getLocalEffectStyles();
-  localEffectStyles.forEach((style: EffectStyle) => {
-    let textValues = {};
-    if (!style.effects || !style.effects.length || !style.effects[0]['color']) {
-      return;
-    }
-    if (style.effects[0].type === 'DROP_SHADOW' || style.effects[0].type === 'INNER_SHADOW') {
-      const effect: InnerShadowEffect = style.effects[0] as InnerShadowEffect;
-      const color = effect.color;
-      const opacity = effect.color.a;
-      const val = Utilities.getColorValue(color, opacity !== undefined ? opacity : 1, colorMode);
-      // Count styles
-      textValues['box-shadow'] = `${style.effects[0].type === 'INNER_SHADOW'?'inset ':''}${formatNumericValue(effect.offset.x, 'px',2)} ${formatNumericValue(effect.offset.y, 'px',2)} ${formatNumericValue(effect.radius,'px',2)}${effect.spread ? ' ' + formatNumericValue(effect.spread, 'px', 2) : ''} ${val}`;
-      effectStyles[style.name] = textValues;
-    }
-    count++;
-  });
-
-  const tStyles = figma.getLocalTextStyles();
-  tStyles.forEach((style: TextStyle) => {
-    let textValues = {};
-    if (style.fontSize) {
-      if(useRem) {
-        textValues['font-size'] = formatNumericValue(style.fontSize/parseInt(rootFontSize), 'rem');
-      } else {
-        textValues['font-size'] = `${style.fontSize}px`;
-      }
-    }
-    if (style.fontName && style.fontName.style) {
-      textValues['font-family'] = `"${style.fontName.family}"`;
-      const fontStyle = style.fontName.style;
-      if (FigmaTextStyles[fontStyle]) {
-        textValues['font-weight'] = FigmaTextStyles[fontStyle].fontWeight;
-        textValues['font-style'] = FigmaTextStyles[fontStyle].fontStyle;
-      }
-    }
-
-    // TODO by UNIT
-    if (style.lineHeight && style.lineHeight['value']) {
-      let lineHeightVal = parseFloat(style.lineHeight['value'].toFixed(2));
-      if (style.lineHeight.unit === 'PERCENT') {
-        textValues['line-height'] = lineHeightVal + '%';
-      } else {
-        textValues['line-height'] = lineHeightVal + 'px';
-      }
-    }
-
-    if (style.letterSpacing && style.letterSpacing.value) {
-      let letterSpacingtVal = parseFloat(style.letterSpacing.value.toFixed(2));
-      if(style.letterSpacing.unit === 'PERCENT') {
-        textValues['letter-spacing'] = letterSpacingtVal/100 + 'em';
-      } else {
-        textValues['letter-spacing'] = letterSpacingtVal + 'px';
-      }
-    }
-
-    if (style.textDecoration) {
-      let textDecorationVal = FigmaTextDecorationStyles[style.textDecoration];
-      textValues['text-decoration'] = textDecorationVal;
-    }
-
-    textStyles[style.name] = textValues;
-    count++;
-  });
+  paintStyles = generatePaintsStyles(pluginOptions);
+  effectStyles = generateEffectStyles(pluginOptions);
+  textStyles = generateTextStyles(pluginOptions);
 }
 
-function traverse(node: BaseNode) {
-  if (!node) {
-    return;
-  }
 
-  if ('children' in node) {
-    if (node.type !== 'INSTANCE') {
-      for (const child of node.children) {
-        traverse(child);
-        if (child.type === 'FRAME') {
-          const styleId: any = child.backgroundStyleId;
-          const style = figma.getStyleById(styleId);
-
-          if (!style) {
-            continue;
-          }
-
-          const key = style.name;
-          if (colorStyles[key]) {
-            continue;
-          }
-
-          // Prepare style
-          const color = style['paints'][0].color;
-          const opacity = style['paints'][0].opacity;
-          const val = Utilities.getColorValue(color, opacity, colorMode);
-
-          // Count styles
-          colorStyles[key] = val;
-          count++;
-        }
-
-        if (child.type === 'RECTANGLE' && child.fillStyleId) {
-          const styleId: any = child.fillStyleId;
-          const style = figma.getStyleById(styleId);
-
-          if (!style) {
-            continue;
-          }
-
-          const key = style.name;
-          if (colorStyles[key]) {
-            continue;
-          }
-
-          // Prepare style
-          const color = style['paints'][0].color;
-          const opacity = style['paints'][0].opacity;
-          const val = Utilities.getColorValue(color, opacity, colorMode);
-
-          // Count styles
-          colorStyles[key] = val;
-          count++;
-        }
-
-        if (child.type === 'TEXT') {
-          const styleId: any = child.textStyleId;
-          if (!styleId || typeof styleId !== 'string') {
-            continue;
-          }
-
-          // Get the style
-          const style: any = figma.getStyleById(styleId);
-
-          if (!style) {
-            continue;
-          }
-          const key = style.name;
-          // Check that the key is not already calculated
-          if (textStyles[key]) {
-            continue;
-          }
-
-          let textValues = {};
-          textValues['font-size'] = `${style.fontSize}px`;
-          textValues['font-family'] = `"${style.fontName.family}"`;
-          const fontStyle = style.fontName.style.toLowerCase();
-          const fontStyleValue = fontStyle === 'regular' ? 'normal' : fontStyle;
-          textValues['font-style'] = fontStyleValue;
-          // TODO by UNIT
-          textValues['line-height'] = style.lineHeight['value'] + 'px';
-          textStyles[key] = textValues;
-          count++;
-        }
-      }
-    }
-  }
-}

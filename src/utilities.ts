@@ -21,7 +21,7 @@ export namespace Utilities {
     }
   }
 
-  export function getMixinPrefix(fileFormat: OUTPUT_FORMAT, mixinName: string, nameFormat = NAME_FORMAT.KEBAB_HYPHEN, styleType = 'text', usePrefix = true) {
+  export function getMixinPrefix(fileFormat: OUTPUT_FORMAT = OUTPUT_FORMAT.SCSS, mixinName: string, nameFormat = NAME_FORMAT.KEBAB_HYPHEN, styleType = 'text', usePrefix = true) {
     let mixinPrefixResult = '';
     const prefix = usePrefix ? `${styleType}-style-` : '';
     let name = formatVariable(`${prefix}${mixinName}`, nameFormat);
@@ -38,7 +38,7 @@ export namespace Utilities {
     return mixinPrefixResult;
   }
 
-  export function formatVariable(variable: string, output: NAME_FORMAT) {
+  export function formatVariable(variable: string, output: NAME_FORMAT = NAME_FORMAT.CAMEL_HYPHEN) {
     let formatted = '';
 
     switch (output) {
