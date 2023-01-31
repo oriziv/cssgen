@@ -206,7 +206,7 @@ class UI extends React.Component<OwnProps, State> {
       return;
     }
 
-    if (data.pluginMessage.count === 0 && this.codeRef && this.codeRef.current) {
+    if ((!code || data.pluginMessage.count === 0) && this.codeRef && this.codeRef.current) {
       this.codeRef.current.innerHTML = '<div style="text-align:center">No local styles were found.<br>Learn <a href="https://cutt.ly/css-gen-styles" target="_blank">here</a> how to add your first styles<div>';
       return;
     }

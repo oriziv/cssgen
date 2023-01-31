@@ -29,83 +29,83 @@ export enum COLOR_MODE {
 }
 
 export const FigmaTextStyles = {
-  "Thin": {
+  "thin": {
     fontStyle: 'normal',
     fontWeight: 100
   },
-  "Light": {
+  "light": {
     fontStyle: 'normal',
     fontWeight: 300
   },
-  "Regular": {
+  "regular": {
     fontStyle: 'normal',
     fontWeight: 400
   },
-  "Medium": {
+  "medium": {
     fontStyle: 'normal',
     fontWeight: 500
   },
-  "Bold": {
+  "bold": {
     fontStyle: 'normal',
     fontWeight: 700
   },
-  "ExtraBold": {
+  "extraBold": {
     fontStyle: 'normal',
     fontWeight: 800
   },
-  "UtraBold": {
+  "ultrabold": {
     fontStyle: 'normal',
     fontWeight: 800
   },
-  "SemiBold": {
+  "semibold": {
     fontStyle: 'normal',
     fontWeight: 600
   },
-  "DemiBold": {
+  "demibold": {
     fontStyle: 'normal',
     fontWeight: 600
   },
-  "Demi": {
+  "demi": {
     fontStyle: 'normal',
     fontWeight: 600
   },
-  "Black": {
+  "black": {
     fontStyle: 'normal',
     fontWeight: 900
   },
-  "Heavy": {
+  "heavy": {
     fontStyle: 'normal',
     fontWeight: 900
   },
-  "UltraBlack": {
+  "ultrablack": {
     fontStyle: 'normal',
     fontWeight: 950
   },
-  "ExtraBlack": {
+  "extrablack": {
     fontStyle: 'normal',
     fontWeight: 950
   },
-  "Thin Italic": {
+  "thin italic": {
     fontStyle: 'italic',
     fontWeight: 100
   },
-  "Light Italic": {
+  "light italic": {
     fontStyle: 'italic',
     fontWeight: 300
   },
-  "Italic": {
+  "italic": {
     fontStyle: 'italic',
     fontWeight: 400
   },
-  "Medium Italic": {
+  "medium italic": {
     fontStyle: 'italic',
     fontWeight: 500
   },
-  "Bold Italic": {
+  "bold italic": {
     fontStyle: 'italic',
     fontWeight: 700
   },
-  "Black Italic": {
+  "black italic": {
     fontStyle: 'italic',
     fontWeight: 900
   }

@@ -18,11 +18,11 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
         }
         if (style.fontName && style.fontName.style) {
             textValues['font-family'] = `"${style.fontName.family}"`;
-            const fontStyle = style.fontName.style;
+            const fontStyle = style.fontName.style.toLowerCase();
             if (FigmaTextStyles[fontStyle]) {
                 textValues['font-weight'] = FigmaTextStyles[fontStyle].fontWeight;
                 textValues['font-style'] = FigmaTextStyles[fontStyle].fontStyle;
-                if(fontStyle.toLowerCase().indexOf('italic')!==-1) {
+                if(fontStyle.indexOf('italic')!==-1) {
                     textValues['font-style'] = 'italic';
                 }
             }
@@ -62,6 +62,9 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
         if(style.paragraphIndent) {
             let textIndentVal = parseFloat(style.paragraphIndent.toFixed(2));
             textValues['text-indent'] = textIndentVal + 'px';
+        }
+        if(style.name === 'Segoe UI/20/lh-base-semibold') {
+            console.log(style);
         }
         styleOutput.styles[style.name] = textValues;
         output.push(styleOutput);
