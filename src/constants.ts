@@ -49,7 +49,7 @@ export const FigmaTextStyles = {
     fontStyle: 'normal',
     fontWeight: 700
   },
-  "extraBold": {
+  "extrabold": {
     fontStyle: 'normal',
     fontWeight: 800
   },
