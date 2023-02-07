@@ -1,4 +1,5 @@
-import { FigmaTextCaseStyles, FigmaTextDecorationStyles, FigmaTextStyles, ROOT_FONT_SIZE } from "./constants";
+import { FigmaTextCaseStyles, FigmaTextDecorationStyles, ROOT_FONT_SIZE } from "./constants";
+import { fontWeights } from "./fontWeights";
 import { IMessageFormat, IOutputStyle } from "./interfaces";
 import { formatNumericValue, Utilities } from "./utilities";
 
@@ -19,9 +20,11 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
         if (style.fontName && style.fontName.style) {
             textValues['font-family'] = `"${style.fontName.family}"`;
             const fontStyle = style.fontName.style.toLowerCase();
-            if (FigmaTextStyles[fontStyle]) {
-                textValues['font-weight'] = FigmaTextStyles[fontStyle].fontWeight;
-                textValues['font-style'] = FigmaTextStyles[fontStyle].fontStyle;
+            const styleIndex = getStyleIndex(fontStyle);
+            if (styleIndex !== -1) {
+                let key = Object.keys(fontWeights)[styleIndex];
+                textValues['font-weight'] = fontWeights[key].fontWeight;
+                textValues['font-style'] = fontWeights[key].fontStyle;
                 if(fontStyle.indexOf('italic')!==-1) {
                     textValues['font-style'] = 'italic';
                 }
@@ -63,9 +66,7 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
             let textIndentVal = parseFloat(style.paragraphIndent.toFixed(2));
             textValues['text-indent'] = textIndentVal + 'px';
         }
-        if(style.name === 'Segoe UI/20/lh-base-semibold') {
-            console.log(style);
-        }
+        
         styleOutput.styles[style.name] = textValues;
         output.push(styleOutput);
     });
@@ -92,4 +93,24 @@ export function formatTextStyleCode(pluginOptions: IMessageFormat,textStyles: IO
         }
     })
     return generatedCode;
+}
+
+// Get the font weight and style from the font name
+function getStyleIndex(fontStyle: string): number {
+    let index = -1;
+    if(fontWeights[fontStyle]) {
+        index = Object.keys(fontWeights).indexOf(fontStyle);
+    }
+
+    // if there isnt a match break font style and search.
+    let breakStyle = fontStyle.split(' ');
+    if(breakStyle.length > 1 && index === -1) {
+        breakStyle.forEach((style) => {
+            if(fontWeights[style]) {
+                index = Object.keys(fontWeights).indexOf(style);
+            };
+        });
+    }
+
+    return index;
 }
