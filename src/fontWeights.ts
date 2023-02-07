@@ -4,13 +4,13 @@ export const fontWeights = {
         fontStyle: 'normal',
         fontWeight: 100
     },
-    "ultralight": {
-        fontStyle: 'normal',
-        fontWeight: 100
-    },
     "hairline": {
         fontStyle: 'normal',
         fontWeight: 100
+    },
+    "ultralight": {
+        fontStyle: 'normal',
+        fontWeight: 200
     },
     "extralight": {
         fontStyle: 'normal',
@@ -22,7 +22,7 @@ export const fontWeights = {
     },
     "book": {
         fontStyle: 'normal',
-        fontWeight: 300
+        fontWeight: 400
     },
     "regular": {
         fontStyle: 'normal',
@@ -98,7 +98,7 @@ export const fontWeights = {
     },
     "ultralight italic": {
         fontStyle: 'italic',
-        fontWeight: 100
+        fontWeight: 200
     },
     "hairline italic": {
         fontStyle: 'italic',
