@@ -4,6 +4,7 @@ import Prism from 'prismjs';
 import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-less';
 import 'prismjs/components/prism-stylus';
+import 'prismjs/components/prism-sass';
 import 'file-saver/dist/FileSaver.js';
 
 import { IMessageFormat } from './interfaces';
@@ -18,6 +19,7 @@ import 'prismjs/themes/prism.css';
  * SCSS imports (local)
  */
 import styles from './ui.scss';
+import { Utilities } from './utilities';
 
 type OwnProps = {};
 
@@ -166,7 +168,7 @@ class UI extends React.Component<OwnProps, State> {
             ref={this.textareaRef}
           ></textarea>
           {/* Prism highlighted code output */}
-          <pre>
+          <pre className={`language-${this.state.outputFormat.toLowerCase()}`}>
             <code className={`language-${this.state.outputFormat.toLowerCase()}`} ref={this.codeRef}></code>
           </pre>
         </div>
@@ -227,7 +229,7 @@ class UI extends React.Component<OwnProps, State> {
 
     // If download was requested - create a download
     if(data.pluginMessage.command === COMMAND_TYPE.DOWNLOAD) {
-        const file = new File([code], `styles.${this.state.outputFormat.toLowerCase()}`, {
+        const file = new File([code], `styles.${Utilities.getFileFormat(this.state.outputFormat)}`, {
           type: 'text/plain;charset=utf-8'
         });
         saveAs(file);      

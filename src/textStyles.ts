@@ -76,6 +76,11 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
 
 export function formatTextStyleCode(pluginOptions: IMessageFormat,textStyles: IOutputStyle[]): string {
     let generatedCode = '';
+    const closingDelimeter = Utilities.getClosingDelimeter(pluginOptions.format);
+    const openingScopeDelimeter = Utilities.getOpeningScopeDelimeter(pluginOptions.format);
+    const closingScopeDelimeter = Utilities.getClosingScopeDelimeter(pluginOptions.format);
+    const functionBrackets = Utilities.getFunctionBracket(pluginOptions.format);
+
     textStyles.forEach(textStyle => {
         if (pluginOptions.addComments && textStyle.description) {
             generatedCode += `\n/* ${textStyle.description} */\n`;
@@ -83,12 +88,12 @@ export function formatTextStyleCode(pluginOptions: IMessageFormat,textStyles: IO
         for (const key in textStyle.styles) {
             const element = textStyle.styles[key];
             const mixinName = Utilities.formatVariable(key, pluginOptions.nameFormat).replace(/^\$|\@/g, '');
-            let value: string = `${Utilities.getMixinPrefix(pluginOptions.format, mixinName, pluginOptions.nameFormat, 'text', pluginOptions.usePrefix)} {\n`;
+            let value: string = `${Utilities.getMixinPrefix(pluginOptions.format, mixinName, pluginOptions.nameFormat, 'text', pluginOptions.usePrefix)}${functionBrackets} ${openingScopeDelimeter}\n`;
             for (const cssRule in element) {
                 const cssValue = element[cssRule];
-                value += `\t${cssRule}:${cssValue};\n`;
+                value += `\t${cssRule}: ${cssValue}${closingDelimeter}\n`;
             }
-            value += `}\n`;
+            value += `${closingScopeDelimeter}\n`;
             generatedCode += value;
         }
     })

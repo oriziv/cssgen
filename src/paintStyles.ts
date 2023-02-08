@@ -43,6 +43,8 @@ export function generatePaintsStyles(pluginOptions: IMessageFormat): IOutputStyl
 
 export function formatPaintStylesCode(pluginOptions: IMessageFormat, paintStyles: IOutputStyle[]): string {
     let generatedCode = '';
+    let delimeter = pluginOptions.format === OUTPUT_FORMAT.STYLUS ? ' = ' : ': ';
+    let closingDelimeter = Utilities.getClosingDelimeter(pluginOptions.format);
     paintStyles.forEach(paintStyle => {
         if (pluginOptions.addComments && paintStyle.description) {
             generatedCode += `\n/* ${paintStyle.description} */\n`;
@@ -53,7 +55,7 @@ export function formatPaintStylesCode(pluginOptions: IMessageFormat, paintStyles
             const preprocessorVariable = `${Utilities.getVariablePrefix(pluginOptions.format)}${Utilities.formatVariable(
                 `${colorPrefix}${key}`,
                 pluginOptions.nameFormat
-            )}: ${val};\n`;
+            )}${delimeter}${val}${closingDelimeter}\n`;
             generatedCode += preprocessorVariable;
         }
     })

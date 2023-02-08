@@ -13,10 +13,89 @@ export namespace Utilities {
     switch (fileFormat) {
       case OUTPUT_FORMAT.SCSS:
         return '$';
+      case OUTPUT_FORMAT.SASS:
+        return '$';
       case OUTPUT_FORMAT.LESS:
         return '@';
+      case OUTPUT_FORMAT.STYLUS:
+        return '';
       case OUTPUT_FORMAT.CSS:
         return '\t--';
+    }
+  }
+
+  export function getFunctionBracket(fileFormat: OUTPUT_FORMAT) {
+    switch (fileFormat) {
+      case OUTPUT_FORMAT.SCSS:
+        return '()';
+      case OUTPUT_FORMAT.LESS:
+        return '()';
+      case OUTPUT_FORMAT.STYLUS:
+        return '()';
+      case OUTPUT_FORMAT.SASS:
+        return '()';
+      case OUTPUT_FORMAT.CSS:
+        return '';
+    }
+  }
+
+  export function getClosingDelimeter(fileFormat: OUTPUT_FORMAT) {
+    switch (fileFormat) {
+      case OUTPUT_FORMAT.SCSS:
+        return ';';
+      case OUTPUT_FORMAT.LESS:
+        return ';';
+      case OUTPUT_FORMAT.STYLUS:
+        return '';
+      case OUTPUT_FORMAT.SASS:
+        return '';
+      case OUTPUT_FORMAT.CSS:
+        return ';';
+    }
+  }
+
+  export function getOpeningScopeDelimeter(fileFormat: OUTPUT_FORMAT) {
+    switch (fileFormat) {
+      case OUTPUT_FORMAT.SCSS:
+        return '{';
+      case OUTPUT_FORMAT.LESS:
+        return '{';
+      case OUTPUT_FORMAT.STYLUS:
+        return '';
+      case OUTPUT_FORMAT.SASS:
+        return '';
+      case OUTPUT_FORMAT.CSS:
+        return '{';
+    }
+  }
+
+  export function getClosingScopeDelimeter(fileFormat: OUTPUT_FORMAT) {
+    switch (fileFormat) {
+      case OUTPUT_FORMAT.SCSS:
+        return '}';
+      case OUTPUT_FORMAT.LESS:
+        return '}';
+      case OUTPUT_FORMAT.STYLUS:
+        return '';
+      case OUTPUT_FORMAT.SASS:
+        return '';
+      case OUTPUT_FORMAT.CSS:
+        return '}';
+    }
+  }
+
+  export function getFileFormat(fileFormat: OUTPUT_FORMAT) {
+    switch (fileFormat) {
+      case OUTPUT_FORMAT.SCSS:
+        return 'scss';
+      case OUTPUT_FORMAT.LESS:
+        return 'less';
+      case OUTPUT_FORMAT.STYLUS:
+        return 'styl';
+      case OUTPUT_FORMAT.SASS:
+        return 'sass';
+      case OUTPUT_FORMAT.CSS:
+        return 'css';
     }
   }
 
@@ -28,8 +107,15 @@ export namespace Utilities {
       case OUTPUT_FORMAT.SCSS:
         mixinPrefixResult = `@mixin ${name}`;
         break;
+      case OUTPUT_FORMAT.SASS:
+        mixinPrefixResult = `@mixin ${name}`;
+        break;
       case OUTPUT_FORMAT.LESS:
         mixinPrefixResult = `.${name}`;
+        break;
+      case OUTPUT_FORMAT.STYLUS:
+        mixinPrefixResult = `${name}`;
+        break;
       default:
         mixinPrefixResult = `.${name}`;
         break;
