@@ -5,15 +5,13 @@ import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-less';
 import 'prismjs/components/prism-stylus';
 import 'prismjs/components/prism-sass';
+import 'prismjs/themes/prism.css';
 import 'file-saver/dist/FileSaver.js';
 
 import { IMessageFormat } from './interfaces';
 import { COLOR_MODE, COMMAND_TYPE, NAME_FORMAT, OUTPUT_FORMAT, ROOT_FONT_SIZE } from './constants';
 
-/**
- * CSS imports (global)
- */
-import 'prismjs/themes/prism.css';
+
 
 /**
  * SCSS imports (local)
@@ -50,6 +48,7 @@ class UI extends React.Component<OwnProps, State> {
     };
     this.textareaRef = React.createRef();
     this.codeRef = React.createRef();
+    console.log('UI constructor');
   }
 
   componentDidMount() {
@@ -232,7 +231,7 @@ class UI extends React.Component<OwnProps, State> {
         const file = new File([code], `styles.${Utilities.getFileFormat(this.state.outputFormat)}`, {
           type: 'text/plain;charset=utf-8'
         });
-        saveAs(file);      
+        window.saveAs(file);      
     }
   };
 

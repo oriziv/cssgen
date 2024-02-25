@@ -1,10 +1,9 @@
 // @ts-check
 
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
 const path = require('path');
 
-/** @type {() => import('./node_modules/webpack/declarations/WebpackOptions').WebpackOptions} */
 module.exports = (env, argv) => ({
   mode: argv.mode === 'production' ? 'production' : 'development',
 
@@ -19,42 +18,26 @@ module.exports = (env, argv) => ({
   module: {
     rules: [
       // Converts TypeScript code to JavaScript
-      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
-
-      // Enables including CSS by doing "import './file.css'" in your TypeScript code
+      { test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/ },
       {
-        test: /\.(scss)$/,
-        loader: [
+        test: /\.(css|scss)$/,
+        use: [
           { loader: 'style-loader' },
           {
             loader: 'css-loader',
-            query: {
+            options: {
               modules: {
-                localIdentName: '[name][local]'
+                localIdentName: '[name][local]',
+                exportLocalsConvention: 'camelCase' // This is the only line that is different from the original webpack.config.js
               },
-              localsConvention: 'camelCase',
-              sourceMap: true
+                sourceMap: true
             }
           },
           { loader: 'sass-loader' }
         ]
       },
-      {
-        test: /\.(css)$/,
-        loader: [
-          { loader: 'style-loader' },
-          {
-            loader: 'css-loader',
-            query: {
-              modules: false,
-              sourceMap: true
-            }
-          }
-        ]
-      },
-
       // Allows you to use "<%= require('./file.svg') %>" in your HTML code to get a data URI
-      { test: /\.(png|jpg|gif|webp|svg)$/, loader: [{ loader: 'url-loader' }] }
+      { test: /\.(png|jpg|gif|webp|svg)$/, loader: 'url-loader' }
     ]
   },
 
@@ -73,13 +56,14 @@ module.exports = (env, argv) => ({
 
   // Tells Webpack to generate "ui.html" and to inline "ui.ts" into it
   plugins: [
-    // @ts-ignore
     new HtmlWebpackPlugin({
       template: './src/ui.html',
       filename: 'ui.html',
+      inject: 'body',
+      // minify: true,
       inlineSource: '.(js)$',
       chunks: ['ui']
     }),
-    new HtmlWebpackInlineSourcePlugin()
+    new HtmlInlineScriptPlugin()
   ]
 });
