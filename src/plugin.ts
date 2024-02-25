@@ -69,6 +69,7 @@ function getLocalStyles() {
   paintStyles = generatePaintsStyles(pluginOptions);
   effectStyles = generateEffectStyles(pluginOptions);
   textStyles = generateTextStyles(pluginOptions);
+  
 }
 
 

@@ -18,8 +18,15 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
             }
         }
         if (style.fontName && style.fontName.style) {
-            textValues['font-family'] = `"${style.fontName.family}"`;
-            const fontStyle = style.fontName.style.toLowerCase();
+            let fontStyle = style.fontName.style.toLowerCase();
+            const fontName = style.fontName.family.toLowerCase();
+            
+            // Check if its italic
+            textValues['font-family'] = style.fontName.family;
+            if(fontStyle.indexOf('italic')!==-1 || fontName.indexOf('italic')!==-1) {
+                textValues['font-style'] = 'italic';
+                fontStyle = fontStyle.replace('italic', '');
+            }
             const styleIndex = getStyleIndex(fontStyle);
             if (styleIndex !== -1) {
                 let key = Object.keys(fontWeights)[styleIndex];
@@ -105,6 +112,15 @@ function getStyleIndex(fontStyle: string): number {
     let index = -1;
     if(fontWeights[fontStyle]) {
         index = Object.keys(fontWeights).indexOf(fontStyle);
+    }
+
+    // try to eliminate the spaces and search again
+    const noSpaceFontStyle = fontStyle.replace(/\s/g, '');
+    if(fontWeights[noSpaceFontStyle]) {
+        index = Object.keys(fontWeights).indexOf(noSpaceFontStyle);
+        if(index !== -1) {
+            return index;
+        }
     }
 
     // if there isnt a match break font style and search.
