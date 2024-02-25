@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Prism from 'prismjs';
-import 'prismjs/components/prism-scss';
-import 'prismjs/components/prism-less';
-import 'prismjs/components/prism-stylus';
-import 'prismjs/components/prism-sass';
-import 'prismjs/themes/prism.css';
+
+import 'prismjs/components/prism-scss.js';
+import 'prismjs/components/prism-less.js';
+import 'prismjs/components/prism-stylus.js';
+import 'prismjs/components/prism-sass.js';
 import 'file-saver/dist/FileSaver.js';
 
 import { IMessageFormat } from './interfaces';

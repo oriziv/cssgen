@@ -30,7 +30,7 @@ module.exports = (env, argv) => ({
                 localIdentName: '[name][local]',
                 exportLocalsConvention: 'camelCase' // This is the only line that is different from the original webpack.config.js
               },
-                sourceMap: true
+              sourceMap: true
             }
           },
           { loader: 'sass-loader' }
