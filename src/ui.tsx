@@ -48,7 +48,6 @@ class UI extends React.Component<OwnProps, State> {
     };
     this.textareaRef = React.createRef();
     this.codeRef = React.createRef();
-    console.log('UI constructor');
   }
 
   componentDidMount() {
@@ -66,7 +65,6 @@ class UI extends React.Component<OwnProps, State> {
       <div className={styles.__}>
         <div className={styles.options}>
           <div className={styles.sectionTitle}>Plugin Options</div>
-
           <div className={styles.inputWrapper}>
             <div className={styles.label}>Output</div>
 
@@ -176,7 +174,9 @@ class UI extends React.Component<OwnProps, State> {
           <button className={`${styles.button} ${styles.buttonPrimary}`} onClick={this.generate}>
             Generate
           </button>
-
+          <a href="https://www.buymeacoffee.com/oriziv" target="_blank" className={styles.buyMe}>
+            <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height={28} width={101} 
+            alt="Buy Me A Coffee" /></a>
           <div className={styles.toolbarBottomButtons}>
             <button
               // disabled={disableButtons}

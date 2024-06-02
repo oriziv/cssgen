@@ -42,7 +42,9 @@ export const FigmaTextCaseStyles = {
   'ORIGINAL': 'none',
   'UPPER': 'uppercase',
   'LOWER': 'lowercase',
-  'TITLE': 'capitalize'
+  'TITLE': 'capitalize',
+  'SMALL_CAPS': 'small-caps',
+  'SMALL_CAPS_FORCED': 'all-small-caps'
 }
 export enum ROOT_FONT_SIZE {
   PX='10',

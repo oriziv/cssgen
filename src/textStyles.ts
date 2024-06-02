@@ -7,6 +7,7 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
     let output: IOutputStyle[] = [{ styles: {} }];
     const tStyles = figma.getLocalTextStyles();
     tStyles.forEach((style: TextStyle) => {
+        // console.log(style, style.name);
         let styleOutput: IOutputStyle = { styles: {} };
         let textValues = {};
         if (style.fontSize) {
@@ -25,16 +26,12 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
             textValues['font-family'] = style.fontName.family;
             if(fontStyle.indexOf('italic')!==-1 || fontName.indexOf('italic')!==-1) {
                 textValues['font-style'] = 'italic';
-                fontStyle = fontStyle.replace('italic', '');
             }
             const styleIndex = getStyleIndex(fontStyle);
             if (styleIndex !== -1) {
                 let key = Object.keys(fontWeights)[styleIndex];
                 textValues['font-weight'] = fontWeights[key].fontWeight;
                 textValues['font-style'] = fontWeights[key].fontStyle;
-                if(fontStyle.indexOf('italic')!==-1) {
-                    textValues['font-style'] = 'italic';
-                }
             }
         }
 
@@ -64,7 +61,11 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
 
         if(style.textCase) {
             let textCaseVal = FigmaTextCaseStyles[style.textCase];
-            textValues['text-transform'] = textCaseVal;
+            if(style.textCase === 'SMALL_CAPS' || style.textCase === 'SMALL_CAPS_FORCED') {
+                textValues['font-variant-caps'] = textCaseVal;
+            } else {
+                textValues['text-transform'] = textCaseVal;
+            }
         }
         if (style.description) {
             styleOutput.description = style.description;

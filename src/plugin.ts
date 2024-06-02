@@ -3,11 +3,13 @@ import { COMMAND_TYPE } from './constants';
 import { formatTextStyleCode, generateTextStyles } from './textStyles';
 import { formatEffectStylesCode, generateEffectStyles } from './effectStyles';
 import { formatPaintStylesCode, generatePaintsStyles } from './paintStyles';
+import { generateGridStyles } from './gridStyles';
 
 // Init
 let count = 0;
 let paintStyles: IOutputStyle[] = [];
 let textStyles: IOutputStyle[] = [];
+let gridStyles: IOutputStyle[] = [];
 let effectStyles: IOutputStyle[] = [];
 let currentGeneratedCode: string = '';
 let pluginOptions: IMessageFormat;
@@ -69,7 +71,7 @@ function getLocalStyles() {
   paintStyles = generatePaintsStyles(pluginOptions);
   effectStyles = generateEffectStyles(pluginOptions);
   textStyles = generateTextStyles(pluginOptions);
-  
+  // gridStyles = generateGridStyles(pluginOptions);
 }
 
 
