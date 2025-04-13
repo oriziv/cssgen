@@ -4,6 +4,11 @@
   "api": "1.0.0",
   "main": "dist/plugin.js",
   "ui": "dist/ui.html",
-  "editorType": ["figma", "dev"],
-  "capabilities": ["inspect", "vscode"]
+  "editorType": ["figma", "dev", "figjam"],
+  "capabilities": ["inspect", "vscode"],
+  "networkAccess": {
+    "allowedDomains": ["https://cdn.buymeacoffee.com"]
+  },
+  "permissions": [],
+  "relaunchButtons": []
 }
