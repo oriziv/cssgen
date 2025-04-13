@@ -6,6 +6,7 @@ import 'prismjs/components/prism-scss.js';
 import 'prismjs/components/prism-less.js';
 import 'prismjs/components/prism-stylus.js';
 import 'prismjs/components/prism-sass.js';
+import 'prismjs/components/prism-json.js';
 import 'file-saver/dist/FileSaver.js';
 
 import { IMessageFormat } from './interfaces';
@@ -218,10 +219,13 @@ class UI extends React.Component<OwnProps, State> {
     }
 
     // Render generated code
+    const language = this.state.outputFormat.toLowerCase();
+    const prismLanguage = Prism.languages[language] || Prism.languages.markup;
+
     const html = Prism.highlight(
       code,
-      Prism.languages[this.state.outputFormat.toLowerCase()],
-      this.state.outputFormat.toLowerCase()
+      prismLanguage,
+      language
       );
       this.codeRef.current.innerHTML = html;
       this.textareaRef.current.value = code;

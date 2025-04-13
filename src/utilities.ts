@@ -21,6 +21,8 @@ export namespace Utilities {
         return '';
       case OUTPUT_FORMAT.CSS:
         return '\t--';
+      case OUTPUT_FORMAT.JSON:
+        return '';
     }
   }
 
@@ -35,6 +37,8 @@ export namespace Utilities {
       case OUTPUT_FORMAT.SASS:
         return '()';
       case OUTPUT_FORMAT.CSS:
+        return '';
+      case OUTPUT_FORMAT.JSON:
         return '';
     }
   }
@@ -51,6 +55,8 @@ export namespace Utilities {
         return '';
       case OUTPUT_FORMAT.CSS:
         return ';';
+      case OUTPUT_FORMAT.JSON:
+        return ',';
     }
   }
 
@@ -65,6 +71,8 @@ export namespace Utilities {
       case OUTPUT_FORMAT.SASS:
         return '';
       case OUTPUT_FORMAT.CSS:
+        return '{';
+      case OUTPUT_FORMAT.JSON:
         return '{';
     }
   }
@@ -81,6 +89,8 @@ export namespace Utilities {
         return '';
       case OUTPUT_FORMAT.CSS:
         return '}';
+      case OUTPUT_FORMAT.JSON:
+        return '}';
     }
   }
 
@@ -96,6 +106,8 @@ export namespace Utilities {
         return 'sass';
       case OUTPUT_FORMAT.CSS:
         return 'css';
+      case OUTPUT_FORMAT.JSON:
+        return 'json';
     }
   }
 

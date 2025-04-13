@@ -1,5 +1,5 @@
 import { IMessageFormat, IOutputStyle } from './interfaces';
-import { COMMAND_TYPE } from './constants';
+import { COMMAND_TYPE, OUTPUT_FORMAT } from './constants';
 import { formatTextStyleCode, generateTextStyles } from './textStyles';
 import { formatEffectStylesCode, generateEffectStyles } from './effectStyles';
 import { formatPaintStylesCode, generatePaintsStyles } from './paintStyles';
@@ -53,10 +53,31 @@ function generateCode(message: IMessageFormat, command = COMMAND_TYPE.GENERATE_C
     // Get all local styles by types
     getLocalStyles();
 
-    // Start generating code
-    generatedCode += formatPaintStylesCode(pluginOptions, paintStyles);
-    generatedCode += formatTextStyleCode(pluginOptions, textStyles);
-    generatedCode += formatEffectStylesCode(pluginOptions, effectStyles);
+    // Generate code
+    if (pluginOptions.format === OUTPUT_FORMAT.JSON) {
+      const paintStylesJson = JSON.parse(formatPaintStylesCode(pluginOptions, paintStyles));
+      const textStylesJson = JSON.parse(formatTextStyleCode(pluginOptions, textStyles));
+      const effectStylesJson = JSON.parse(formatEffectStylesCode(pluginOptions, effectStyles));
+
+      const combinedJson = {
+        variables: {
+          ...paintStylesJson.variables,
+        },
+        textStyles: {
+          ...textStylesJson.textStyles,
+          ...effectStylesJson.textStyles
+        },
+        effectStyles: {
+          ...effectStylesJson.effects
+        }
+      };
+
+      generatedCode = JSON.stringify(combinedJson, null, 2);
+    } else {
+      generatedCode += formatPaintStylesCode(pluginOptions, paintStyles);
+      generatedCode += formatTextStyleCode(pluginOptions, textStyles);
+      generatedCode += formatEffectStylesCode(pluginOptions, effectStyles);
+    }
 
     // Count the styles that were generated
     count = Object.keys(paintStyles).length + Object.keys(effectStyles).length + Object.keys(textStyles).length;
@@ -73,5 +94,3 @@ function getLocalStyles() {
   textStyles = generateTextStyles(pluginOptions);
   // gridStyles = generateGridStyles(pluginOptions);
 }
-
-

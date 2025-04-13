@@ -42,27 +42,49 @@ export function generatePaintsStyles(pluginOptions: IMessageFormat): IOutputStyl
 
 
 export function formatPaintStylesCode(pluginOptions: IMessageFormat, paintStyles: IOutputStyle[]): string {
-    let generatedCode = '';
-    let delimeter = pluginOptions.format === OUTPUT_FORMAT.STYLUS ? ' = ' : ': ';
-    let closingDelimeter = Utilities.getClosingDelimeter(pluginOptions.format);
-    paintStyles.forEach(paintStyle => {
-        if (pluginOptions.addComments && paintStyle.description) {
-            generatedCode += `\n/* ${paintStyle.description} */\n`;
-        }
-        for (const key in paintStyle.styles) {
-            const val = paintStyle.styles[key];
-            const colorPrefix = pluginOptions.usePrefix ? 'color-' : '';
-            const preprocessorVariable = `${Utilities.getVariablePrefix(pluginOptions.format)}${Utilities.formatVariable(
-                `${colorPrefix}${key}`,
-                pluginOptions.nameFormat
-            )}${delimeter}${val}${closingDelimeter}\n`;
-            generatedCode += preprocessorVariable;
-        }
-    })
+    if (pluginOptions.format === OUTPUT_FORMAT.JSON) {
+        const jsonOutput = {
+            variables: {},
+            textStyles: {}
+        };
+        paintStyles.forEach(paintStyle => {
+            for (const key in paintStyle.styles) {
+                const colorPrefix = pluginOptions.usePrefix ? 'color-' : '';
+                const formattedKey = Utilities.formatVariable(
+                    `${colorPrefix}${key}`,
+                    pluginOptions.nameFormat
+                );
+                const val = paintStyle.styles[key];
+                jsonOutput.variables[formattedKey] = {
+                    value: val,
+                    ...(paintStyle.description && { description: paintStyle.description })
+                };
+            }
+        });
+        return JSON.stringify(jsonOutput, null, 2);
+    } else {
+        let generatedCode = '';
+        let delimeter = pluginOptions.format === OUTPUT_FORMAT.STYLUS ? ' = ' : ': ';
+        let closingDelimeter = Utilities.getClosingDelimeter(pluginOptions.format);
+        paintStyles.forEach(paintStyle => {
+            if (pluginOptions.addComments && paintStyle.description) {
+                generatedCode += `\n/* ${paintStyle.description} */\n`;
+            }
+            for (const key in paintStyle.styles) {
+                const val = paintStyle.styles[key];
+                const colorPrefix = pluginOptions.usePrefix ? 'color-' : '';
+                const preprocessorVariable = `${Utilities.getVariablePrefix(pluginOptions.format)}${Utilities.formatVariable(
+                    `${colorPrefix}${key}`,
+                    pluginOptions.nameFormat
+                )}${delimeter}${val}${closingDelimeter}\n`;
+                generatedCode += preprocessorVariable;
+            }
+        })
 
-    // In case of CSS we wrap it inside root element
-    if (pluginOptions.format === OUTPUT_FORMAT.CSS) {
-        generatedCode = `:root {\n${generatedCode}}\n`;
+        // In case of CSS we wrap it inside root element
+        if (pluginOptions.format === OUTPUT_FORMAT.CSS) {
+            generatedCode = `:root {\n${generatedCode}}\n`;
+        }
+        return generatedCode;
     }
-    return generatedCode;
 }

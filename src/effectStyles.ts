@@ -1,4 +1,5 @@
 import { IMessageFormat, IOutputStyle } from './interfaces';
+import { OUTPUT_FORMAT } from './constants';
 import { formatNumericValue, Utilities } from './utilities';
 
 export function generateEffectStyles(pluginOptions: IMessageFormat): IOutputStyle[] {
@@ -56,33 +57,50 @@ export function generateEffectStyles(pluginOptions: IMessageFormat): IOutputStyl
 }
 
 export function formatEffectStylesCode(pluginOptions: IMessageFormat, effectStyles: IOutputStyle[]): string {
-  let generatedCode = '';
-  const closingDelimeter = Utilities.getClosingDelimeter(pluginOptions.format);
-  const openingScopeDelimeter = Utilities.getOpeningScopeDelimeter(pluginOptions.format);
-  const closingScopeDelimeter = Utilities.getClosingScopeDelimeter(pluginOptions.format);
-  const functionBrackets = Utilities.getFunctionBracket(pluginOptions.format);
-
-  effectStyles.forEach(effectStyle => {
-    if (pluginOptions.addComments && effectStyle.description) {
-      generatedCode += `\n/* ${effectStyle.description} */\n`;
-    }
-    for (const key in effectStyle.styles) {
-      const element = effectStyle.styles[key];
-      const mixinName = Utilities.formatVariable(key, pluginOptions.nameFormat).replace(/^\$|\@/g, '');
-      let value: string = `${Utilities.getMixinPrefix(
-        pluginOptions.format,
-        mixinName,
-        pluginOptions.nameFormat,
-        'effect',
-        pluginOptions.usePrefix
-      )}${functionBrackets} ${openingScopeDelimeter}\n`;
-      for (const cssRule in element) {
-        const cssValue = element[cssRule];
-        value += `\t${cssRule}: ${cssValue}${closingDelimeter}\n`;
+  if (pluginOptions.format === OUTPUT_FORMAT.JSON) {
+    const jsonOutput = {
+      effects: {}
+    };
+    effectStyles.forEach(effectStyle => {
+      for (const key in effectStyle.styles) {
+        const mixinName = Utilities.formatVariable(key, pluginOptions.nameFormat).replace(/^\$|\@/g, '');
+        const element = effectStyle.styles[key];
+        jsonOutput.effects[mixinName] = {
+          cssProperty: element,
+          ...(effectStyle?.description && { description: effectStyle.description })
+        };
       }
-      value += `${closingScopeDelimeter}\n`;
-      generatedCode += value;
-    }
-  });
-  return generatedCode;
+    });
+    return JSON.stringify(jsonOutput, null, 2);
+  } else {
+    let generatedCode = '';
+    const closingDelimeter = Utilities.getClosingDelimeter(pluginOptions.format);
+    const openingScopeDelimeter = Utilities.getOpeningScopeDelimeter(pluginOptions.format);
+    const closingScopeDelimeter = Utilities.getClosingScopeDelimeter(pluginOptions.format);
+    const functionBrackets = Utilities.getFunctionBracket(pluginOptions.format);
+
+    effectStyles.forEach(effectStyle => {
+      if (pluginOptions.addComments && effectStyle.description) {
+        generatedCode += `\n/* ${effectStyle.description} */\n`;
+      }
+      for (const key in effectStyle.styles) {
+        const element = effectStyle.styles[key];
+        const mixinName = Utilities.formatVariable(key, pluginOptions.nameFormat).replace(/^\$|\@/g, '');
+        let value: string = `${Utilities.getMixinPrefix(
+          pluginOptions.format,
+          mixinName,
+          pluginOptions.nameFormat,
+          'effect',
+          pluginOptions.usePrefix
+        )}${functionBrackets} ${openingScopeDelimeter}\n`;
+        for (const cssRule in element) {
+          const cssValue = element[cssRule];
+          value += `\t${cssRule}: ${cssValue}${closingDelimeter}\n`;
+        }
+        value += `${closingScopeDelimeter}\n`;
+        generatedCode += value;
+      }
+    });
+    return generatedCode;
+  }
 }

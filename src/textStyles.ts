@@ -1,4 +1,4 @@
-import { FigmaTextCaseStyles, FigmaTextDecorationStyles, ROOT_FONT_SIZE } from "./constants";
+import { FigmaTextCaseStyles, FigmaTextDecorationStyles, OUTPUT_FORMAT, ROOT_FONT_SIZE } from "./constants";
 import { fontWeights } from "./fontWeights";
 import { IMessageFormat, IOutputStyle } from "./interfaces";
 import { formatNumericValue, Utilities } from "./utilities";
@@ -83,29 +83,47 @@ export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[
 
 
 export function formatTextStyleCode(pluginOptions: IMessageFormat,textStyles: IOutputStyle[]): string {
-    let generatedCode = '';
-    const closingDelimeter = Utilities.getClosingDelimeter(pluginOptions.format);
-    const openingScopeDelimeter = Utilities.getOpeningScopeDelimeter(pluginOptions.format);
-    const closingScopeDelimeter = Utilities.getClosingScopeDelimeter(pluginOptions.format);
-    const functionBrackets = Utilities.getFunctionBracket(pluginOptions.format);
-
-    textStyles.forEach(textStyle => {
-        if (pluginOptions.addComments && textStyle.description) {
-            generatedCode += `\n/* ${textStyle.description} */\n`;
-        }
-        for (const key in textStyle.styles) {
-            const element = textStyle.styles[key];
-            const mixinName = Utilities.formatVariable(key, pluginOptions.nameFormat).replace(/^\$|\@/g, '');
-            let value: string = `${Utilities.getMixinPrefix(pluginOptions.format, mixinName, pluginOptions.nameFormat, 'text', pluginOptions.usePrefix)}${functionBrackets} ${openingScopeDelimeter}\n`;
-            for (const cssRule in element) {
-                const cssValue = element[cssRule];
-                value += `\t${cssRule}: ${cssValue}${closingDelimeter}\n`;
+    if (pluginOptions.format === OUTPUT_FORMAT.JSON) {
+        const jsonOutput = {
+            variables: {},
+            textStyles: {}
+        };
+        textStyles.forEach(textStyle => {
+            for (const key in textStyle.styles) {
+                const mixinName = Utilities.formatVariable(key, pluginOptions.nameFormat).replace(/^\$|\@/g, '');
+                const element = textStyle.styles[key];
+                jsonOutput.textStyles[mixinName] = {
+                    cssProperty: element,
+                    ...(textStyle.description && { description: textStyle.description })
+                };
             }
-            value += `${closingScopeDelimeter}\n`;
-            generatedCode += value;
-        }
-    })
-    return generatedCode;
+        });
+        return JSON.stringify(jsonOutput, null, 2);
+    } else {
+        let generatedCode = '';
+        const closingDelimeter = Utilities.getClosingDelimeter(pluginOptions.format);
+        const openingScopeDelimeter = Utilities.getOpeningScopeDelimeter(pluginOptions.format);
+        const closingScopeDelimeter = Utilities.getClosingScopeDelimeter(pluginOptions.format);
+        const functionBrackets = Utilities.getFunctionBracket(pluginOptions.format);
+
+        textStyles.forEach(textStyle => {
+            if (pluginOptions.addComments && textStyle.description) {
+                generatedCode += `\n/* ${textStyle.description} */\n`;
+            }
+            for (const key in textStyle.styles) {
+                const element = textStyle.styles[key];
+                const mixinName = Utilities.formatVariable(key, pluginOptions.nameFormat).replace(/^\$|\@/g, '');
+                let value: string = `${Utilities.getMixinPrefix(pluginOptions.format, mixinName, pluginOptions.nameFormat, 'text', pluginOptions.usePrefix)}${functionBrackets} ${openingScopeDelimeter}\n`;
+                for (const cssRule in element) {
+                    const cssValue = element[cssRule];
+                    value += `\t${cssRule}: ${cssValue}${closingDelimeter}\n`;
+                }
+                value += `${closingScopeDelimeter}\n`;
+                generatedCode += value;
+            }
+        })
+        return generatedCode;
+    }
 }
 
 // Get the font weight and style from the font name

@@ -3,8 +3,8 @@ export enum OUTPUT_FORMAT {
   LESS = 'LESS',
   CSS = 'CSS',
   STYLUS = 'STYLUS',
-  SASS = 'SASS'
-  // JSON = 'JSON'
+  SASS = 'SASS',
+  JSON = 'JSON'
 }
 
 export enum NAME_FORMAT {
