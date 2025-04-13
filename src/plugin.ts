@@ -3,7 +3,6 @@ import { COMMAND_TYPE, OUTPUT_FORMAT } from './constants';
 import { formatTextStyleCode, generateTextStyles } from './textStyles';
 import { formatEffectStylesCode, generateEffectStyles } from './effectStyles';
 import { formatPaintStylesCode, generatePaintsStyles } from './paintStyles';
-import { generateGridStyles } from './gridStyles';
 
 // Init
 let count = 0;
@@ -48,10 +47,10 @@ function generateCode(message: IMessageFormat, command = COMMAND_TYPE.GENERATE_C
   pluginOptions = message;
 
   // Release the ui thread to paint and exec traverse.
-  setTimeout(() => {
+  setTimeout(async () => {
 
     // Get all local styles by types
-    getLocalStyles();
+    await getLocalStyles();
 
     // Generate code
     if (pluginOptions.format === OUTPUT_FORMAT.JSON) {
@@ -88,9 +87,9 @@ function generateCode(message: IMessageFormat, command = COMMAND_TYPE.GENERATE_C
 
 // This plugin counts the number of layers, ignoring instance sublayers,
 // in the document
-function getLocalStyles() {
-  paintStyles = generatePaintsStyles(pluginOptions);
-  effectStyles = generateEffectStyles(pluginOptions);
-  textStyles = generateTextStyles(pluginOptions);
+async function getLocalStyles() {
+  paintStyles = await generatePaintsStyles(pluginOptions);
+  effectStyles = await generateEffectStyles(pluginOptions);
+  textStyles = await generateTextStyles(pluginOptions);
   // gridStyles = generateGridStyles(pluginOptions);
 }

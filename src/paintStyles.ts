@@ -3,9 +3,9 @@ import { IMessageFormat, IOutputStyle } from "./interfaces";
 import { Utilities } from "./utilities";
 
 
-export function generatePaintsStyles(pluginOptions: IMessageFormat): IOutputStyle[] {
+export async function generatePaintsStyles(pluginOptions: IMessageFormat): Promise<IOutputStyle[]> {
     let output: IOutputStyle[] = [{ styles: {} }];
-    const paintStyles = figma.getLocalPaintStyles();
+    const paintStyles = await figma.getLocalPaintStylesAsync();
     paintStyles.forEach((style: PaintStyle) => {
         let styleOutput: IOutputStyle = { styles: {} };
         // Prepare style - currently supports only solid color

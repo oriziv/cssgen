@@ -3,9 +3,9 @@ import { fontWeights } from "./fontWeights";
 import { IMessageFormat, IOutputStyle } from "./interfaces";
 import { formatNumericValue, Utilities } from "./utilities";
 
-export function generateTextStyles(pluginOptions: IMessageFormat): IOutputStyle[] {
+export async function generateTextStyles(pluginOptions: IMessageFormat): Promise<IOutputStyle[]> {
     let output: IOutputStyle[] = [{ styles: {} }];
-    const tStyles = figma.getLocalTextStyles();
+    const tStyles = await figma.getLocalTextStylesAsync();
     tStyles.forEach((style: TextStyle) => {
         // console.log(style, style.name);
         let styleOutput: IOutputStyle = { styles: {} };

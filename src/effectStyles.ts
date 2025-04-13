@@ -2,9 +2,9 @@ import { IMessageFormat, IOutputStyle } from './interfaces';
 import { OUTPUT_FORMAT } from './constants';
 import { formatNumericValue, Utilities } from './utilities';
 
-export function generateEffectStyles(pluginOptions: IMessageFormat): IOutputStyle[] {
+export async function generateEffectStyles(pluginOptions: IMessageFormat): Promise<IOutputStyle[]> {
   let output: IOutputStyle[] = [{ styles: {} }];
-  const localEffectStyles = figma.getLocalEffectStyles();
+  const localEffectStyles = await figma.getLocalEffectStylesAsync();
   localEffectStyles.forEach((style: EffectStyle) => {
     let styleOutput: IOutputStyle = { styles: {} };
     let textValues = {};

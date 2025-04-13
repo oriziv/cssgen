@@ -1,9 +1,8 @@
 import { IMessageFormat, IOutputStyle } from './interfaces';
-import { formatNumericValue, Utilities } from './utilities';
 
-export function generateGridStyles(pluginOptions: IMessageFormat): IOutputStyle[] {
+export async function generateGridStyles(pluginOptions: IMessageFormat): Promise<IOutputStyle[]> {
   let output: IOutputStyle[] = [{ styles: {} }];
-  const localGridStyles = figma.getLocalGridStyles();
+  const localGridStyles = await figma.getLocalGridStylesAsync();
   localGridStyles.forEach((style: GridStyle) => {
     console.log(style);
   });
